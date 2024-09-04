@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.formatted-css ul, li, ol {
+  list-style: revert;
+  margin: revert;
+  padding: revert;
+}
+
+@layer utilities {
+  /* TYPOGRAPHY */
+  .h1-bold {
+    @apply text-[36px] font-bold leading-[140%];
+  }
+
+  .h1-semibold {
+    @apply text-[36px] font-semibold leading-[140%];
+  }
+
+  .h2-bold {
+    @apply text-[30px] font-bold leading-[140%];
+  }
+
+  .h2-semibold {
+    @apply text-[30px] font-semibold leading-[140%];
+  }
+
+  .h3-bold {
+    @apply text-[24px] font-bold leading-[140%];
+  }
+
+  .text-tiny {
+    @apply text-[14px] leading-[140%];
+  }
+
+  .flex-center {
+    @apply flex justify-center items-center;
+  }
+
+  .flex-between {
+    @apply flex justify-between items-center;
+  }
+
+  .animation-color {
+    @apply transition ease-in-out duration-300;
+  }
+
+  .animation-scale {
+    @apply transition delay-100 hover:scale-110 ease-in-out duration-300;
+  }
+}
+
+@layer components {
+  .border-shadow {
+    @apply shadow-md border rounded-md border-gray-300;
+  }
+
+  .btn-primary {
+    @apply bg-blue-500 text-white p-2 rounded-lg hover:brightness-75;
+  }
+
+  .btn-secondary {
+    @apply border border-blue-500 text-black p-2 rounded-lg hover:bg-light-1;
+  }
+
+  .item-dropdown {
+    @apply flex items-center gap-2 p-1 animation-color;
+  }
+
+  .input-field {
+    @apply font-semibold w-full p-2 rounded-md mr-8 border border-gray-400
+  }
+}
