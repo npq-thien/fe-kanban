@@ -5,15 +5,12 @@ import KanbanBoard from "./components/KanbanBoard";
 import LoginPage from "./pages/LoginPage";
 
 function App() {
-
   return (
     <div>
-      <div>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/" element={<KanbanBoard />} />
-          </Routes>
-      </div>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<KanbanBoard />} />
+      </Routes>
     </div>
   );
 }

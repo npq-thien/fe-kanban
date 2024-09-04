@@ -1,4 +1,5 @@
 const LoginPage = () => {
+
   return (
     <div className="bg-cream h-screen flex-center">
       <div className="flex flex-col gap-4 bg-white w-full max-w-lg p-4 rounded-md">
