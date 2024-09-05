@@ -25,40 +25,45 @@ export const taskData: Task[] = [
     columnId: "col-1",
     title: "Make an auth feature",
     description: "Login and logout in the hotel management web",
+    dueDate: new Date(2024, 8, 10), // September is month 8 in JavaScript (0-indexed)
   },
   {
     id: "task-2",
     columnId: "col-1",
     title: "Learn Spring boot on Youtube",
     description: "",
+    dueDate: new Date(2024, 8, 12),
   },
   {
     id: "task-3",
     columnId: "col-3",
-    title:
-      "Artificial intelligence (AI) is a trending technology.",
+    title: "Artificial intelligence (AI) is a trending technology.",
     description: "",
+    dueDate: new Date(2024, 8, 14),
   },
-  // {
-  //   id: "task-4",
-  //   columnId: "col-2",
-  //   title:
-  //     "Customize gradient button for login page",
-  //   description: "",
-  // },
+  {
+    id: "task-4",
+    columnId: "col-2",
+    title: "Customize gradient button for login page",
+    description: "",
+    dueDate: new Date(2024, 8, 15),
+  },
   // {
   //   id: "task-5",
   //   columnId: "col-1",
   //   title: "This is a fake task 🤠",
   //   description: "",
+  //   dueDate: new Date(2024, 8, 16),
   // },
   // {
   //   id: "task-6",
   //   columnId: "col-3",
   //   title: "fix bug",
   //   description: "",
+  //   dueDate: new Date(2024, 8, 18),
   // },
 ];
+
 
 export const taskActivities: TaskActivity[] = [
   {

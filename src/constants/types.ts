@@ -22,6 +22,7 @@ export type Task = {
   columnId: Id;
   title: string;
   description: string;
+  dueDate: Date;
   // add member, create Member type
 };
 

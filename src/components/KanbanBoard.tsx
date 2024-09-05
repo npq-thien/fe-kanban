@@ -24,6 +24,7 @@ import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 import TaskCard from "./TaskCard";
 import EditTaskModal from "./EditTaskModal";
 import { toast } from "react-toastify";
+import AddTaskModal from "./AddTaskModal";
 
 type BoardProps = {
   name?: string;
@@ -210,6 +211,7 @@ const KanbanBoard = (props: BoardProps) => {
       columnId: columnId,
       title: taskTitle,
       description: "",
+      dueDate: new Date(),
     };
 
     setTasks([...tasks, newTask]);
@@ -291,8 +293,20 @@ const KanbanBoard = (props: BoardProps) => {
       </div>
 
       {/* Modal for editing task */}
-      {selectedTask && (
+      {/* {selectedTask && (
         <EditTaskModal
+          open={openEdit}
+          task={selectedTask}
+          taskActivities={taskActivities}
+          addTaskActivity={handleAddingTaskActivity}
+          handleClose={handleClose}
+          editTaskTitle={editTaskTitle}
+        />
+      )} */}
+
+      {/* Modal add task */}
+      {selectedTask && (
+        <AddTaskModal
           open={openEdit}
           task={selectedTask}
           taskActivities={taskActivities}

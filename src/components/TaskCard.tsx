@@ -12,6 +12,8 @@ import {
 } from "@mui/material";
 
 import { Id, Task, TaskActivity } from "../constants/types";
+import { formatDueDate } from "src/utils/helper";
+import { FaRegClock } from "react-icons/fa";
 
 type Props = {
   task: Task;
@@ -78,12 +80,18 @@ const TaskCard = (props: Props) => {
         className="relative overflow-y-auto p-2 rounded-xl bg-white break-words opacity-25 overflow-hidden border-2 border-blue-400"
       >
         {task.title}
-        {activityByTask.length > 0 && (
-          <div className="flex items-center gap-1 mt-2">
-            <IoChatbubbleEllipsesOutline />
-            <p className="text-tiny">{activityByTask.length}</p>
-          </div>
-        )}
+        <div className="flex items-center gap-2 mt-2">
+          <p className="flex-center gap-2 p-1 bg-yellow-300 rounded-md">
+            <FaRegClock />
+            {formatDueDate(task.dueDate)}
+          </p>
+          {activityByTask.length > 0 && (
+            <div className="flex items-center gap-1">
+              <IoChatbubbleEllipsesOutline />
+              <p className="text-tiny">{activityByTask.length}</p>
+            </div>
+          )}
+        </div>
       </div>
     );
   }
@@ -99,21 +107,27 @@ const TaskCard = (props: Props) => {
         className="relative overflow-y-auto p-2 rounded-xl bg-white break-words border-2 hover:border-blue-400 overflow-hidden group cursor-grab"
         onClick={() => selectTask(task)}
       >
-        <button
+        {/* <button
           className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-light-2
        hover:bg-light-3 p-1 rounded-full z-10 opacity-0 group-hover:opacity-100 transition-opacity"
           onClick={handleOpenDeleteTask}
         >
           <MdDeleteForever />
-        </button>
+        </button> */}
         <p>{task.title}</p>
 
-        {activityByTask.length > 0 && (
-          <div className="flex items-center gap-1 mt-2">
-            <IoChatbubbleEllipsesOutline />
-            <p className="text-tiny">{activityByTask.length}</p>
-          </div>
-        )}
+        <div className="flex items-center gap-2 mt-2">
+          <p className="flex-center gap-2 p-1 bg-yellow-300 rounded-md">
+            <FaRegClock />
+            {formatDueDate(task.dueDate)}
+          </p>
+          {activityByTask.length > 0 && (
+            <div className="flex items-center gap-1">
+              <IoChatbubbleEllipsesOutline />
+              <p className="text-tiny">{activityByTask.length}</p>
+            </div>
+          )}
+        </div>
       </div>
       <Dialog open={openDeleteTask} onClose={handleCloseDeleteTask}>
         <DialogTitle>Confirm deletion</DialogTitle>

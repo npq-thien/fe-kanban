@@ -18,3 +18,13 @@ export const formatDate = (date: Date): string => {
 
   return date.toLocaleDateString('en-US', options);
 };
+
+export const formatDueDate = (date: Date): string => {
+  const options: Intl.DateTimeFormatOptions = {
+    day: 'numeric',
+    month: 'numeric',
+    year: 'numeric',
+  };
+
+  return date.toLocaleDateString('en-US', options);
+};
