@@ -2,12 +2,12 @@ import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useSignInAccount } from "src/api/authApi";
 import "react-toastify/dist/ReactToastify.css";
 
-interface IFormInput {
+interface ILoginFormInput {
   username: string;
   password: string;
 }
@@ -31,11 +31,14 @@ const LoginPage = () => {
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm<IFormInput>();
+  } = useForm<ILoginFormInput>();
 
   const { mutate: loginAccount } = useMutation({
     mutationFn: useSignInAccount,
-    onSuccess: async (data) => {
+    onSuccess: (response) => {
+      const token = response.data.token;
+      // console.log(response.data.token);
+      localStorage.setItem("token", token);
       setIsSignedIn(true);
       navigate("/");
       notify(true);
@@ -46,7 +49,7 @@ const LoginPage = () => {
     },
   });
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => {
+  const onSubmit: SubmitHandler<ILoginFormInput> = (data) => {
     loginAccount(data);
   };
 
@@ -94,6 +97,7 @@ const LoginPage = () => {
                   value: true,
                   message: "Password is required",
                 },
+
               })}
             />
             {errors.password && (
@@ -108,13 +112,20 @@ const LoginPage = () => {
           </p>
         </div>
 
-        <button className="btn-primary w-full" onClick={handleSubmit(onSubmit)}>
-          Login
+        <button
+          className="btn-primary w-full font-semibold"
+          onClick={handleSubmit(onSubmit)}
+        >
+          LOGIN
         </button>
 
         <div className="flex-center gap-2">
-          <p>Don't have an account</p>
-          <p className="text-blue-500 font-semibold cursor-pointer">Sign up</p>
+          <p>Don't have an account?</p>
+          <Link to={"/signup"}>
+            <p className="text-blue-500 font-semibold cursor-pointer">
+              Sign up
+            </p>
+          </Link>
         </div>
       </div>
     </div>

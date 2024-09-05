@@ -1,5 +1,17 @@
 export type Id = string | number;
 
+// Auth
+export type SignUpInput = {
+  username: string;
+  password: string;
+  displayName: string;
+};
+
+export type LoginInput = {
+  username: string;
+  password: string;
+};
+
 export type Column = {
   id: Id;
   title: string;

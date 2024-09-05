@@ -13,6 +13,10 @@ export const columnData: Column[] = [
     id: "col-3",
     title: "Done ✅",
   },
+  {
+    id: "col-4",
+    title: "Cancel 🚫",
+  },
 ];
 
 export const taskData: Task[] = [
@@ -35,25 +39,25 @@ export const taskData: Task[] = [
       "Artificial intelligence (AI) is a trending technology.",
     description: "",
   },
-  {
-    id: "task-4",
-    columnId: "col-2",
-    title:
-      "Customize gradient button for login page",
-    description: "",
-  },
-  {
-    id: "task-5",
-    columnId: "col-1",
-    title: "This is a fake task 🤠",
-    description: "",
-  },
-  {
-    id: "task-6",
-    columnId: "col-3",
-    title: "fix bug",
-    description: "",
-  },
+  // {
+  //   id: "task-4",
+  //   columnId: "col-2",
+  //   title:
+  //     "Customize gradient button for login page",
+  //   description: "",
+  // },
+  // {
+  //   id: "task-5",
+  //   columnId: "col-1",
+  //   title: "This is a fake task 🤠",
+  //   description: "",
+  // },
+  // {
+  //   id: "task-6",
+  //   columnId: "col-3",
+  //   title: "fix bug",
+  //   description: "",
+  // },
 ];
 
 export const taskActivities: TaskActivity[] = [

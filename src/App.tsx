@@ -1,9 +1,10 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 
-import KanbanBoard from "./components/KanbanBoard";
 import LoginPage from "./pages/LoginPage";
 import { ToastContainer } from "react-toastify";
+import SignUpPage from "./pages/SignUpPage";
+import HomePage from "./pages/HomePage";
 
 function App() {
   return (
@@ -11,7 +12,8 @@ function App() {
       <ToastContainer autoClose={2000} />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/" element={<KanbanBoard />} />
+        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/" element={<HomePage />} />
       </Routes>
     </div>
   );

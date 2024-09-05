@@ -22,7 +22,6 @@ type Props = {
   column: Column;
   deleteColumn: (id: Id) => void;
   editColumnTitle: (id: Id, title: string) => void;
-  onShowToast: () => void;
 
   tasks: Task[];
   selectTask: (task: Task) => void;
@@ -38,7 +37,6 @@ const ColumnContainer = (props: Props) => {
     column,
     deleteColumn,
     editColumnTitle,
-    onShowToast,
     tasks,
     selectTask,
     createTask,
@@ -102,22 +100,9 @@ const ColumnContainer = (props: Props) => {
   const handleConfirmDeleteColumn = () => {
     setOpenDeleteColumn(false);
     setOpenMenu(false);
-    onShowToast();
     deleteColumn(column.id);
   };
 
-  // Create the old UI at the position of dragging table
-  if (isDragging) {
-    return (
-      <div
-        ref={setNodeRef}
-        style={style}
-        // className="w-[250px] h-full overflow-y-auto bg-slate-50 rounded-lg p-2 border-2 border-blue-400 opacity-50"
-      className="w-[250px] h-full flex flex-col gap-4 bg-gradient-to-b from-cream-4 to-transparent rounded-lg p-2"
-
-      ></div>
-    );
-  }
 
   return (
     <div
@@ -148,8 +133,8 @@ const ColumnContainer = (props: Props) => {
         </div>
       </Menu>
       <header
-        {...listeners}
-        {...attributes}
+        // {...listeners}
+        // {...attributes}
         className="sticky top-0 flex-between gap-2 font-bold"
       >
         <div
