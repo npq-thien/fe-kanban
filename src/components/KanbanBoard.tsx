@@ -39,7 +39,7 @@ const KanbanBoard = (props: BoardProps) => {
   const [activeColumn, setActiveColumn] = useState<Column | null>();
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>();
-  const [openEdit, setOpenEdit] = useState(false);
+  const [openAddTask, setOpenAddTask] = useState(false);
   const columnIds = useMemo(() => columns.map((col) => col.id), [columns]);
 
   const sensors = useSensors(
@@ -62,13 +62,41 @@ const KanbanBoard = (props: BoardProps) => {
   };
 
   // Task
+  const openCreateTaskModal = () => {
+    setOpenAddTask(true);
+  };
+
+  const createTask = (columnId: Id, taskTitle: string) => {
+    const newTask: Task = {
+      id: generateId(),
+      columnId: columnId,
+      title: taskTitle,
+      description: "",
+      dueDate: new Date(),
+    };
+
+    setTasks([...tasks, newTask]);
+  };
+
+  const deleteTask = (taskId: Id) => {
+    setTasks(tasks.filter((task) => task.id !== taskId));
+    notifyDeleteTask(true);
+  };
+
+  const editTaskTitle = (taskId: Id, newTaskTitle: string) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === taskId ? { ...task, title: newTaskTitle } : task
+      )
+    );
+  };
   const selectTask = (task: Task) => {
     setSelectedTask(task);
-    setOpenEdit(true);
+    // setOpenAddTask(true);
   };
 
   // Task activities
-  const handleClose = () => [setOpenEdit(false)];
+  const handleClose = () => [setOpenAddTask(false)];
 
   const handleAddingTaskActivity = (activityContent: string) => {
     const newTaskActivity: TaskActivity = {
@@ -204,32 +232,6 @@ const KanbanBoard = (props: BoardProps) => {
     }
   };
 
-  // Task
-  const createTask = (columnId: Id, taskTitle: string) => {
-    const newTask: Task = {
-      id: generateId(),
-      columnId: columnId,
-      title: taskTitle,
-      description: "",
-      dueDate: new Date(),
-    };
-
-    setTasks([...tasks, newTask]);
-  };
-
-  const deleteTask = (taskId: Id) => {
-    setTasks(tasks.filter((task) => task.id !== taskId));
-    notifyDeleteTask(true);
-  };
-
-  const editTaskTitle = (taskId: Id, newTaskTitle: string) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === taskId ? { ...task, title: newTaskTitle } : task
-      )
-    );
-  };
-
   return (
     <div>
       <div className="px-4">
@@ -252,6 +254,7 @@ const KanbanBoard = (props: BoardProps) => {
                     deleteColumn={deleteColumn}
                     editColumnTitle={editColumnTitle}
                     tasks={tasks.filter((task) => task.columnId === col.id)}
+                    openAddTask={openCreateTaskModal}
                     selectTask={selectTask}
                     createTask={createTask}
                     deleteTask={deleteTask}
@@ -271,6 +274,7 @@ const KanbanBoard = (props: BoardProps) => {
                 deleteColumn={deleteColumn}
                 selectTask={selectTask}
                 editColumnTitle={editColumnTitle}
+                openAddTask={openCreateTaskModal}
                 tasks={tasks.filter(
                   (task) => task.columnId === activeColumn.id
                 )}
@@ -288,14 +292,12 @@ const KanbanBoard = (props: BoardProps) => {
             )}
           </DragOverlay>
         </DndContext>
-
-        {/* Adding column button */}
       </div>
 
       {/* Modal for editing task */}
       {/* {selectedTask && (
         <EditTaskModal
-          open={openEdit}
+          open={openAddTask}
           task={selectedTask}
           taskActivities={taskActivities}
           addTaskActivity={handleAddingTaskActivity}
@@ -305,16 +307,7 @@ const KanbanBoard = (props: BoardProps) => {
       )} */}
 
       {/* Modal add task */}
-      {selectedTask && (
-        <AddTaskModal
-          open={openEdit}
-          task={selectedTask}
-          taskActivities={taskActivities}
-          addTaskActivity={handleAddingTaskActivity}
-          handleClose={handleClose}
-          editTaskTitle={editTaskTitle}
-        />
-      )}
+      <AddTaskModal open={openAddTask} handleClose={handleClose} />
     </div>
   );
 };

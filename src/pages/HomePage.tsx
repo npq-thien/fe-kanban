@@ -55,7 +55,7 @@ const HomePage = () => {
           </Link>
           <div className="relative flex items-center">
             <FaSearch className="w-5 h-5 absolute left-2" />
-            <input type="text" className="input-field pl-10" placeholder="Search" />
+            <input type="text" className="input-field pl-10" placeholder="Type here to search..." />
           </div>
         </div>
 

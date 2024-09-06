@@ -24,6 +24,7 @@ type Props = {
   editColumnTitle: (id: Id, title: string) => void;
 
   tasks: Task[];
+  openAddTask: () => void;
   selectTask: (task: Task) => void;
   createTask: (columnId: Id, taskTitle: string) => void;
   deleteTask?: (taskId: Id) => void;
@@ -40,13 +41,12 @@ const ColumnContainer = (props: Props) => {
     tasks,
     selectTask,
     createTask,
+    openAddTask,
     deleteTask,
     taskActivities,
   } = props;
-  const [isAddingTask, setIsAddingTask] = useState(false);
   const [taskTitle, setTaskTitle] = useState("");
   const [isEditTitle, setIsEditTitle] = useState(false);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
   const taskIds = useMemo(() => {
     return tasks.map((task) => task.id);
   }, [tasks]);
@@ -54,14 +54,7 @@ const ColumnContainer = (props: Props) => {
   const [openMenu, setOpenMenu] = useState(false);
   const [anchorMenu, setAnchorMenu] = useState<null | HTMLElement>(null);
   const [openDeleteColumn, setOpenDeleteColumn] = useState(false);
-  const {
-    setNodeRef,
-    attributes,
-    listeners,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
+  const { setNodeRef, transform, transition } = useSortable({
     id: column.id,
     data: {
       type: "Column",
@@ -83,7 +76,6 @@ const ColumnContainer = (props: Props) => {
     if (taskTitle.trim()) {
       createTask(column.id, taskTitle);
       setTaskTitle("");
-      setIsAddingTask(false);
     }
   };
 
@@ -102,7 +94,6 @@ const ColumnContainer = (props: Props) => {
     setOpenMenu(false);
     deleteColumn(column.id);
   };
-
 
   return (
     <div
@@ -184,45 +175,13 @@ const ColumnContainer = (props: Props) => {
         </SortableContext>
       </div>
 
-      {isAddingTask ? (
-        <div>
-          <div className="mb-4">
-            <TextareaAutosize
-              ref={inputRef}
-              className="w-full p-2 rounded-xl resize-none"
-              placeholder="Enter a name for this card"
-              onChange={(e) => setTaskTitle(e.target.value)}
-            />
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              className="flex-center py-1 gap-2 btn-primary w-full"
-              onClick={handleAddTask}
-            >
-              <FaPlus />
-              Add card
-            </button>
-            <button
-              className="mx-2 rounded-md p-2 hover:bg-light-3"
-              onClick={() => setIsAddingTask(false)}
-            >
-              <MdClose />
-            </button>
-          </div>
-        </div>
-      ) : (
+      {column.title === "Open 🔘" && (
         <button
           className="flex-center py-1 gap-2 btn-primary w-full"
-          onClick={() => {
-            // Wait for the input field rendered then focus it
-            setTimeout(() => {
-              inputRef.current?.focus();
-            }, 0);
-            setIsAddingTask(true);
-          }}
+          onClick={openAddTask}
         >
           <FaPlus />
-          Add a card
+          Add a task
         </button>
       )}
 
