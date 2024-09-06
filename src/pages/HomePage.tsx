@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { BsKanbanFill } from "react-icons/bs";
 import { FaSearch } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import KanbanBoard from "src/components/KanbanBoard";
 
 const HomePage = () => {
@@ -12,11 +13,31 @@ const HomePage = () => {
   const [anchorProfile, setAnchorProfile] = useState<null | HTMLElement>(null);
   const openProfileMenu = Boolean(anchorProfile);
 
+  const notify = (message: string, type: "success" | "error" | "warn") => {
+    const toastTypes = {
+      success: toast.success,
+      error: toast.error,
+      warn: toast.warn,
+    };
+
+    toastTypes[type](message, { position: "top-right" });
+  };
+
   useEffect(() => {
-    const storedTOken = localStorage.getItem("token");
-    if (storedTOken) {
-      const userInfo = jwtDecode(storedTOken);
+    const storedToken = localStorage.getItem("token");
+
+    if (storedToken) {
+      const userInfo = jwtDecode(storedToken) as { exp: number };
       setUser(userInfo);
+      console.log("userinfo", userInfo);
+
+      const currentTime = Math.floor(Date.now() / 1000);
+      if (userInfo.exp && userInfo.exp < currentTime) {
+        console.warn("Token has expired");
+        notify("Token has expired", "warn");
+        localStorage.removeItem("token");
+        navigate("/login"); // Redirect to login page
+      }
     } else {
       console.error("Failed to decode token");
       navigate("/login");
@@ -55,7 +76,11 @@ const HomePage = () => {
           </Link>
           <div className="relative flex items-center">
             <FaSearch className="w-5 h-5 absolute left-2" />
-            <input type="text" className="input-field pl-10" placeholder="Type here to search..." />
+            <input
+              type="text"
+              className="input-field pl-10"
+              placeholder="Type here to search..."
+            />
           </div>
         </div>
 

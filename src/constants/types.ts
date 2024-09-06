@@ -12,6 +12,13 @@ export type LoginInput = {
   password: string;
 };
 
+export type TokenInfo = {
+  userId: string;
+  displayName: string;
+  expirationTime: Date;
+}
+
+// Business
 export type Column = {
   id: Id;
   title: string;

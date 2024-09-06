@@ -63,61 +63,63 @@ const LoginPage = () => {
           </p>
         </div>
 
-        <div className="">
-          <div className="flex flex-col gap-2">
-            <div className="flex gap-1">
-              <p>Username</p>
-              <p className="text-red-500">*</p>
+        <form className="flex flex-col gap-4">
+          <div>
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-1">
+                <p>Username</p>
+                <p className="text-red-500">*</p>
+              </div>
+              <input
+                type="text"
+                className="input-field rounded-xl"
+                {...register("username", {
+                  required: {
+                    value: true,
+                    message: "Username is required",
+                  },
+                })}
+              />
+              {errors.username && (
+                <p className="text-red-500">{errors.username?.message}</p>
+              )}
             </div>
-            <input
-              type="text"
-              className="input-field rounded-xl"
-              {...register("username", {
-                required: {
-                  value: true,
-                  message: "Username is required",
-                },
-              })}
-            />
-            {errors.username && (
-              <p className="text-red-500">{errors.username?.message}</p>
-            )}
+
+            <div className="flex flex-col gap-2 mt-4">
+              <div className="flex gap-1">
+                <p>Password</p>
+                <p className="text-red-500">*</p>
+              </div>
+              <input
+                type="password"
+                className="input-field rounded-xl"
+                {...register("password", {
+                  required: {
+                    value: true,
+                    message: "Password is required",
+                  },
+                })}
+              />
+              {errors.password && (
+                <p className="text-red-500">{errors.password?.message}</p>
+              )}
+            </div>
           </div>
 
-          <div className="flex flex-col gap-2 mt-4">
-            <div className="flex gap-1">
-              <p>Password</p>
-              <p className="text-red-500">*</p>
-            </div>
-            <input
-              type="password"
-              className="input-field rounded-xl"
-              {...register("password", {
-                required: {
-                  value: true,
-                  message: "Password is required",
-                },
-
-              })}
-            />
-            {errors.password && (
-              <p className="text-red-500">{errors.password?.message}</p>
-            )}
+          <div className="flex">
+            <p className="text-blue-500 font-semibold cursor-pointer">
+              Forgot password?
+            </p>
           </div>
-        </div>
 
-        <div className="flex">
-          <p className="text-blue-500 font-semibold cursor-pointer">
-            Forgot password?
-          </p>
-        </div>
-
-        <button
-          className="btn-primary w-full font-semibold"
-          onClick={handleSubmit(onSubmit)}
-        >
-          LOGIN
-        </button>
+          <button
+            className="btn-primary w-full font-semibold"
+            onClick={handleSubmit(onSubmit)}
+            type="submit"
+          >
+            LOGIN
+          </button>
+        </form>
 
         <div className="flex-center gap-2">
           <p>Don't have an account?</p>
