@@ -1,11 +1,10 @@
-import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "react-query";
-import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 
 import { useSignInAccount } from "src/api/authApi";
 import "react-toastify/dist/ReactToastify.css";
+import { showNotification } from "src/utils/notificationUtil";
 
 interface ILoginFormInput {
   username: string;
@@ -13,19 +12,7 @@ interface ILoginFormInput {
 }
 
 const LoginPage = () => {
-  const [isSignedIn, setIsSignedIn] = useState(false);
   const navigate = useNavigate();
-
-  const notify = (isSignedIn: boolean) => {
-    if (isSignedIn)
-      toast.success("Login successfully!", {
-        position: "top-right",
-      });
-    else
-      toast.error("Login failed!", {
-        position: "top-right",
-      });
-  };
 
   const {
     register,
@@ -39,13 +26,12 @@ const LoginPage = () => {
       const token = response.data.token;
       // console.log(response.data.token);
       localStorage.setItem("token", token);
-      setIsSignedIn(true);
+      showNotification("success", "Login successfully!");
       navigate("/");
-      notify(true);
     },
     onError: (error: any) => {
       console.log(error.response?.data?.message);
-      notify(false);
+      showNotification("error", "Login failed!");
     },
   });
 

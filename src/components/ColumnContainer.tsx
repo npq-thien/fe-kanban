@@ -1,6 +1,5 @@
 import { CSS } from "@dnd-kit/utilities";
 import { useMemo, useRef, useState } from "react";
-import { MdClose } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
@@ -14,7 +13,6 @@ import {
   DialogTitle,
   Menu,
   MenuItem,
-  TextareaAutosize,
 } from "@mui/material";
 import TaskCard from "./TaskCard";
 
@@ -27,7 +25,6 @@ type Props = {
   openAddTask: () => void;
   selectTask: (task: Task) => void;
   createTask: (columnId: Id, taskTitle: string) => void;
-  deleteTask?: (taskId: Id) => void;
   editTaskTitle?: (taskId: Id, newTaskTitle: string) => void;
 
   taskActivities: TaskActivity[];
@@ -42,9 +39,12 @@ const ColumnContainer = (props: Props) => {
     selectTask,
     createTask,
     openAddTask,
-    deleteTask,
     taskActivities,
   } = props;
+
+  // console.log('in column', tasks)
+
+  
   const [taskTitle, setTaskTitle] = useState("");
   const [isEditTitle, setIsEditTitle] = useState(false);
   const taskIds = useMemo(() => {
@@ -168,14 +168,13 @@ const ColumnContainer = (props: Props) => {
               key={task.id}
               task={task}
               selectTask={selectTask}
-              deleteTask={deleteTask}
               taskActivities={taskActivities}
             />
           ))}
         </SortableContext>
       </div>
 
-      {column.title === "Open 🔘" && (
+      {column.title === "Open🔘" && (
         <button
           className="flex-center py-1 gap-2 btn-primary w-full"
           onClick={openAddTask}

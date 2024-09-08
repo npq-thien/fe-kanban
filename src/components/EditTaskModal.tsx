@@ -69,24 +69,24 @@ const EditTaskModal = (props: Props) => {
   const [isAddingTaskActivity, setIsAddingTaskActivity] = useState(false);
   const [activityContent, setActivityContent] = useState("");
 
-  const [taskTitle, setTaskTitle] = useState(task.title);
+  const [taskTitle, setTaskTitle] = useState(task.name);
   const [isEditTaskTitle, setIsEditTaskTitle] = useState(false);
   const [taskDescription, setTaskDescription] = useState(task.description);
   const [isEditTaskDescription, setIsEditTaskDescription] = useState(false);
 
   // Sync data from Board to Modal
   useEffect(() => {
-    setTaskTitle(task.title);
+    setTaskTitle(task.name);
     setTaskDescription(task.description);
     setTaskActivities(initTaskActivities);
-  }, [task.title, task.description, initTaskActivities]);
+  }, [task.name, task.description, initTaskActivities]);
 
   const handleEditTaskTitle = () => {
     if (editTaskTitle) editTaskTitle(task.id, taskTitle);
     if (taskTitle.trim() !== "") {
       setIsEditTaskTitle(false);
     }
-    task.title = taskTitle;
+    task.name = taskTitle;
   };
 
   const handleAddingTaskActivity = () => {
@@ -103,7 +103,7 @@ const EditTaskModal = (props: Props) => {
               className="text-2xl font-semibold p-1 w-full"
               onClick={() => setIsEditTaskTitle(true)}
             >
-              {task.title}
+              {task.name}
             </h2>
           ) : (
             <input

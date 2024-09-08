@@ -2,13 +2,6 @@ import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
 import { useEffect, useState } from "react";
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
 
 import { Id, Task, TaskActivity } from "../constants/types";
 import { formatDueDate } from "src/utils/helper";
@@ -27,6 +20,8 @@ const TaskCard = (props: Props) => {
   const [openDeleteTask, setOpenDeleteTask] = useState(false);
   const [activityByTask, setActivityByTask] = useState<TaskActivity[]>([]);
 
+  // console.log('in task', task)
+
   useEffect(() => {
     const filteredActivities = taskActivities?.filter(
       (activity) => activity.taskId === task.id
@@ -34,19 +29,11 @@ const TaskCard = (props: Props) => {
     setActivityByTask(filteredActivities || []);
   }, [taskActivities, task.id]);
 
-  const handleOpenDeleteTask = (event: any) => {
-    event.stopPropagation(); // Prevents the click event from the parent div (openEdit)
-    setOpenDeleteTask(true);
-  };
+  // const handleOpenDeleteTask = (event: any) => {
+  //   event.stopPropagation(); // Prevents the click event from the parent div (openEdit)
+  //   setOpenDeleteTask(true);
+  // };
 
-  const handleCloseDeleteTask = () => {
-    setOpenDeleteTask(false);
-  };
-
-  const handleConfirmDeleteTask = () => {
-    if (deleteTask) deleteTask(task.id);
-    setOpenDeleteTask(false);
-  };
 
   const {
     setNodeRef,
@@ -78,11 +65,11 @@ const TaskCard = (props: Props) => {
         key={task.id}
         className="relative overflow-y-auto p-2 rounded-xl bg-white break-words opacity-25 overflow-hidden border-2 border-blue-400"
       >
-        {task.title}
+        {task.name}
         <div className="flex items-center gap-2 mt-2">
           <p className="flex-center gap-2 p-1 bg-yellow-300 rounded-md">
             <FaRegClock />
-            {formatDueDate(task.dueDate)}
+            {formatDueDate(task.dateTimeFinish.toString())}
           </p>
           {activityByTask.length > 0 && (
             <div className="flex items-center gap-1">
@@ -113,12 +100,12 @@ const TaskCard = (props: Props) => {
         >
           <MdDeleteForever />
         </button> */}
-        <p>{task.title}</p>
+        <p>{task.name}</p>
 
         <div className="flex items-center gap-2 mt-2">
           <p className="flex-center gap-2 p-1 bg-yellow-300 rounded-md">
             <FaRegClock />
-            {formatDueDate(task.dueDate)}
+            {formatDueDate(task.dateTimeFinish.toString())}
           </p>
           {activityByTask.length > 0 && (
             <div className="flex items-center gap-1">
@@ -128,12 +115,14 @@ const TaskCard = (props: Props) => {
           )}
         </div>
       </div>
-      <Dialog open={openDeleteTask} onClose={handleCloseDeleteTask}>
+
+      {/* modal delete task confirm */}
+      {/* <Dialog open={openDeleteTask} onClose={handleCloseDeleteTask}>
         <DialogTitle>Confirm deletion</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Are you sure you want to delete task{" "}
-            <span className="text-red-500">{task.title}</span>?
+            <span className="text-red-500">{task.name}</span>?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -150,7 +139,7 @@ const TaskCard = (props: Props) => {
             Agree
           </button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </div>
   );
 };

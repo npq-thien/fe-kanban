@@ -8,23 +8,19 @@ export function generateUniqueId(prefix: string = "id"): string {
 
 export const formatDate = (date: Date): string => {
   const options: Intl.DateTimeFormatOptions = {
-    weekday: 'short',
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
+    weekday: "short",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
   };
 
-  return date.toLocaleDateString('en-US', options);
+  return date.toLocaleDateString("en-US", options);
 };
 
-export const formatDueDate = (date: Date): string => {
-  const options: Intl.DateTimeFormatOptions = {
-    day: 'numeric',
-    month: 'numeric',
-    year: 'numeric',
-  };
-
-  return date.toLocaleDateString('en-US', options);
+export const formatDueDate = (date: string): string => {
+  const onlyDate = date.split("T")[0];
+  const formatedDate = onlyDate.split("-").reverse();
+  return formatedDate.join("-");
 };

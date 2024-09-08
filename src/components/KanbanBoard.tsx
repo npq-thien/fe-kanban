@@ -1,41 +1,35 @@
 import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
-import { generateId, generateUniqueId } from "../utils/helper";
 import { Column, Id, Task, TaskActivity } from "../constants/types";
 import ColumnContainer from "./ColumnContainer";
 import {
   columnData,
-  taskData,
   taskActivities as taskActivityData,
 } from "../constants/data";
 import {
   DndContext,
-  DragEndEvent,
-  DragOverEvent,
   DragOverlay,
-  DragStartEvent,
   MouseSensor,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { arrayMove, SortableContext } from "@dnd-kit/sortable";
+import { SortableContext } from "@dnd-kit/sortable";
 
 import TaskCard from "./TaskCard";
-import EditTaskModal from "./EditTaskModal";
 import { toast } from "react-toastify";
 import AddTaskModal from "./AddTaskModal";
 
 type BoardProps = {
   name?: string;
+  tasks: Task[];
 };
 
 const KanbanBoard = (props: BoardProps) => {
-  const { name } = props;
+  const { name, tasks: taskData } = props;
   const [columns, setColumns] = useState<Column[]>(columnData);
-  const [tasks, setTasks] = useState<Task[]>(taskData);
   const [taskActivities, setTaskActivities] =
     useState<TaskActivity[]>(taskActivityData);
+
   const [activeColumn, setActiveColumn] = useState<Column | null>();
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>();
@@ -50,46 +44,28 @@ const KanbanBoard = (props: BoardProps) => {
     })
   );
 
-  const notifyDeleteTask = (isSignedIn: boolean) => {
-    if (isSignedIn)
-      toast.success("Delete task successfully!", {
-        position: "top-right",
-      });
-    else
-      toast.error("Delete task failed!", {
-        position: "top-right",
-      });
-  };
 
   // Task
   const openCreateTaskModal = () => {
     setOpenAddTask(true);
   };
 
-  const createTask = (columnId: Id, taskTitle: string) => {
-    const newTask: Task = {
-      id: generateId(),
-      columnId: columnId,
-      title: taskTitle,
-      description: "",
-      dueDate: new Date(),
-    };
+  const createTask = () => {};
 
-    setTasks([...tasks, newTask]);
-  };
 
-  const deleteTask = (taskId: Id) => {
-    setTasks(tasks.filter((task) => task.id !== taskId));
-    notifyDeleteTask(true);
-  };
+  //  TODO: CAN DELETE TASK CANCEL COLUMN
+  // const deleteTask = (taskId: Id) => {
+  //   setTasks(tasks.filter((task) => task.id !== taskId));
+  //   notifyDeleteTask(true);
+  // };
 
-  const editTaskTitle = (taskId: Id, newTaskTitle: string) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === taskId ? { ...task, title: newTaskTitle } : task
-      )
-    );
-  };
+  // const editTaskTitle = (taskId: Id, newTaskTitle: string) => {
+  //   setTasks((prevTasks) =>
+  //     prevTasks.map((task) =>
+  //       task.id === taskId ? { ...task, title: newTaskTitle } : task
+  //     )
+  //   );
+  // };
   const selectTask = (task: Task) => {
     setSelectedTask(task);
     // setOpenAddTask(true);
@@ -98,26 +74,20 @@ const KanbanBoard = (props: BoardProps) => {
   // Task activities
   const handleClose = () => [setOpenAddTask(false)];
 
-  const handleAddingTaskActivity = (activityContent: string) => {
-    const newTaskActivity: TaskActivity = {
-      id: generateUniqueId("activity"),
-      taskId: selectedTask?.id || "",
-      user: "Thien Nguyen", // current user
-      date: new Date(),
-      content: activityContent,
-    };
+  // const handleAddingTaskActivity = (activityContent: string) => {
+  //   const newTaskActivity: TaskActivity = {
+  //     id: generateUniqueId("activity"),
+  //     taskId: selectedTask?.id || "",
+  //     user: "Thien Nguyen", // current user
+  //     date: new Date(),
+  //     content: activityContent,
+  //   };
 
-    setTaskActivities([newTaskActivity, ...taskActivities]);
-  };
+  //   setTaskActivities([newTaskActivity, ...taskActivities]);
+  // };
 
   //  Column
-  const deleteColumn = (id: Id) => {
-    setColumns(columns.filter((col) => col.id !== id));
-
-    // Delete tasks in column
-    const tasksInColumn = tasks.filter((task) => task.columnId !== id);
-    setTasks(tasksInColumn);
-  };
+  const deleteColumn = (id: Id) => {};
 
   const editColumnTitle = (id: Id, title: string) => {
     setColumns((prevCol) => {
@@ -125,7 +95,18 @@ const KanbanBoard = (props: BoardProps) => {
     });
   };
 
-  // // DND column
+  // ---------------------------------------------DND LOGIC
+  // const onDragStart = (e: DragStartEvent) => {
+  //   if (e.active.data.current?.type === "Column") {
+  //     return;
+  //   }
+
+  //   if (e.active.data.current?.type === "Task") {
+  //     setActiveTask(e.active.data.current.task);
+  //     return;
+  //   }
+  // };
+
   // const onDragEnd = (e: DragEndEvent) => {
   //   setActiveColumn(null);
   //   setActiveTask(null);
@@ -153,84 +134,47 @@ const KanbanBoard = (props: BoardProps) => {
   //   }
   // };
 
-  const onDragStart = (e: DragStartEvent) => {
-    if (e.active.data.current?.type === "Column") {
-      return;
-    }
+  // const onDragOver = (e: DragOverEvent) => {
+  //   const { active, over } = e;
+  //   if (!over) return;
 
-    if (e.active.data.current?.type === "Task") {
-      setActiveTask(e.active.data.current.task);
-      return;
-    }
-  };
+  //   const activeId = active.id;
+  //   const overId = over.id;
 
-  const onDragEnd = (e: DragEndEvent) => {
-    setActiveColumn(null);
-    setActiveTask(null);
+  //   if (activeId === overId) return;
 
-    const { active, over } = e;
-    if (!over) return;
-    const activeColumnId = active.id;
-    const overColumnId = over.id;
-    if (activeColumnId === overColumnId) return;
+  //   const isActiveTask = active.data.current?.type === "Task";
+  //   const isOverTask = over.data.current?.type === "Task";
 
-    if (
-      active.data.current?.type === "Column" &&
-      over.data.current?.type === "Column"
-    ) {
-      setColumns((columns) => {
-        const activeColumnIndex = columns.findIndex(
-          (col) => col.id === activeColumnId
-        );
-        const overColumnIndex = columns.findIndex(
-          (col) => col.id === overColumnId
-        );
+  //   // console.log("Active task ID:", activeId, "Over ID:", overId);
+  //   if (!isActiveTask) return;
 
-        return arrayMove(columns, activeColumnIndex, overColumnIndex);
-      });
-    }
-  };
+  //   // Drop a task over another task
+  //   if (isActiveTask && isOverTask) {
+  //     setTasks((tasks) => {
+  //       const activeIndex = tasks.findIndex((task) => task.id === activeId);
+  //       const overIndex = tasks.findIndex((task) => task.id === overId);
 
-  const onDragOver = (e: DragOverEvent) => {
-    const { active, over } = e;
-    if (!over) return;
+  //       tasks[activeIndex].columnId = tasks[overIndex].columnId;
+  //       // console.log("move task", activeIndex, overIndex)
 
-    const activeId = active.id;
-    const overId = over.id;
+  //       return arrayMove(tasks, activeIndex, overIndex);
+  //     });
+  //   }
 
-    if (activeId === overId) return;
+  //   // Drop a task over a column
+  //   const isOverAColumn = over.data.current?.type === "Column";
+  //   if (isActiveTask && isOverAColumn) {
+  //     setTasks((tasks) => {
+  //       const activeIndex = tasks.findIndex((task) => task.id === activeId);
+  //       // console.log("move column", activeIndex)
 
-    const isActiveTask = active.data.current?.type === "Task";
-    const isOverTask = over.data.current?.type === "Task";
-
-    // console.log("Active task ID:", activeId, "Over ID:", overId);
-    if (!isActiveTask) return;
-
-    // Drop a task over another task
-    if (isActiveTask && isOverTask) {
-      setTasks((tasks) => {
-        const activeIndex = tasks.findIndex((task) => task.id === activeId);
-        const overIndex = tasks.findIndex((task) => task.id === overId);
-
-        tasks[activeIndex].columnId = tasks[overIndex].columnId;
-        // console.log("move task", activeIndex, overIndex)
-
-        return arrayMove(tasks, activeIndex, overIndex);
-      });
-    }
-
-    // Drop a task over a column
-    const isOverAColumn = over.data.current?.type === "Column";
-    if (isActiveTask && isOverAColumn) {
-      setTasks((tasks) => {
-        const activeIndex = tasks.findIndex((task) => task.id === activeId);
-        // console.log("move column", activeIndex)
-
-        tasks[activeIndex].columnId = overId;
-        return arrayMove(tasks, activeIndex, activeIndex);
-      });
-    }
-  };
+  //       tasks[activeIndex].columnId = overId;
+  //       return arrayMove(tasks, activeIndex, activeIndex);
+  //     });
+  //   }
+  // };
+  // ---------------------------------------------------------------------------
 
   return (
     <div>
@@ -238,12 +182,7 @@ const KanbanBoard = (props: BoardProps) => {
         <p className="text-xl font-semibold">{name}</p>
       </div>
       <div className="flex gap-2 p-4">
-        <DndContext
-          sensors={sensors}
-          onDragStart={onDragStart}
-          onDragEnd={onDragEnd}
-          onDragOver={onDragOver}
-        >
+        <DndContext sensors={sensors}>
           <SortableContext items={columnIds}>
             <div className="flex gap-4">
               {columns.map((col) => (
@@ -253,12 +192,10 @@ const KanbanBoard = (props: BoardProps) => {
                     column={col}
                     deleteColumn={deleteColumn}
                     editColumnTitle={editColumnTitle}
-                    tasks={tasks.filter((task) => task.columnId === col.id)}
+                    tasks={taskData.filter((task: Task) => task.status === col.status)}
                     openAddTask={openCreateTaskModal}
                     selectTask={selectTask}
                     createTask={createTask}
-                    deleteTask={deleteTask}
-                    editTaskTitle={editTaskTitle}
                     taskActivities={taskActivities}
                   />
                 </div>
@@ -275,9 +212,7 @@ const KanbanBoard = (props: BoardProps) => {
                 selectTask={selectTask}
                 editColumnTitle={editColumnTitle}
                 openAddTask={openCreateTaskModal}
-                tasks={tasks.filter(
-                  (task) => task.columnId === activeColumn.id
-                )}
+                tasks={taskData.filter((task) => task.status === activeColumn.id)}
                 createTask={createTask}
                 taskActivities={taskActivities}
               />

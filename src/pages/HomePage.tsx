@@ -1,11 +1,12 @@
-import { Menu, MenuItem } from "@mui/material";
+import { CircularProgress, Menu, MenuItem } from "@mui/material";
 import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
 import { BsKanbanFill } from "react-icons/bs";
 import { FaSearch } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { useGetAllTasks } from "src/api/taskApi";
 import KanbanBoard from "src/components/KanbanBoard";
+import { Task } from "src/constants/types";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -13,39 +14,37 @@ const HomePage = () => {
   const [anchorProfile, setAnchorProfile] = useState<null | HTMLElement>(null);
   const openProfileMenu = Boolean(anchorProfile);
 
-  const notify = (message: string, type: "success" | "error" | "warn") => {
-    const toastTypes = {
-      success: toast.success,
-      error: toast.error,
-      warn: toast.warn,
-    };
-
-    toastTypes[type](message, { position: "top-right" });
-  };
-
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
 
     if (storedToken) {
       const userInfo = jwtDecode(storedToken) as { exp: number };
+      console.log("user", userInfo);
       setUser(userInfo);
-      console.log("userinfo", userInfo);
 
       const currentTime = Math.floor(Date.now() / 1000);
       if (userInfo.exp && userInfo.exp < currentTime) {
-        console.warn("Token has expired");
-        notify("Token has expired", "warn");
         localStorage.removeItem("token");
-        navigate("/login"); // Redirect to login page
+        navigate("/login");
       }
     } else {
-      console.error("Failed to decode token");
       navigate("/login");
     }
   }, [navigate]);
 
+  const { data, isLoading } = useGetAllTasks();
+  if (data) console.log("data in home changed", data.data.tasks);
+
+  if (isLoading) {
+    return (
+      <div>
+        <CircularProgress />
+      </div>
+    );
+  }
+
   const handleLogOut = () => {
-    localStorage.removeItem("token"); // Remove token from localStorage
+    localStorage.removeItem("token");
     setUser(null);
     navigate("/login");
   };
@@ -100,15 +99,19 @@ const HomePage = () => {
         )}
       </nav>
 
-      <div className="h-[100vh] mt-20">
-        <KanbanBoard />
-      </div>
+      {data && (
+        <>
+          <div className="h-[100vh] mt-20">
+            <KanbanBoard tasks={data.data.tasks} />
+          </div>
 
-      <div className="h-1 w-full px-8 bg-red-400"></div>
+          <div className="h-1 w-full px-8 bg-red-400"></div>
 
-      <div className="h-[100vh]">
-        <KanbanBoard name="Public tasks" />
-      </div>
+          <div className="h-[100vh]">
+            <KanbanBoard tasks={data.data.tasks.filter((task: Task) => task.isPublic)} name="Public tasks" />
+          </div>
+        </>
+      )}
     </div>
   );
 };

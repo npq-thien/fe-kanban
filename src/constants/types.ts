@@ -16,21 +16,34 @@ export type TokenInfo = {
   userId: string;
   displayName: string;
   expirationTime: Date;
-}
+};
+
+// Task
+export type CreateTaskInput = {
+  name: string;
+  status: string;
+  dateTimeFinish: string;
+  isPublic: boolean;
+  description: string;
+};
 
 // Business
 export type Column = {
   id: Id;
   title: string;
+  status: string;
 };
 
 export type Task = {
   id: Id;
-  columnId: Id;
-  title: string;
+  name: string;
+  status: string;
+  isPublic: boolean;
   description: string;
-  dueDate: Date;
-  // add member, create Member type
+  dateTimeStart: Date;
+  dateTimeFinish: Date;
+  creatorDisplayName: string;
+  priority?: string;
 };
 
 export type TaskActivity = {
