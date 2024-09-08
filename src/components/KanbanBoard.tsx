@@ -16,24 +16,26 @@ import {
 import { SortableContext } from "@dnd-kit/sortable";
 
 import TaskCard from "./TaskCard";
-import { toast } from "react-toastify";
 import AddTaskModal from "./AddTaskModal";
+import EditTaskModal from "./EditTaskModal";
 
 type BoardProps = {
   name?: string;
   tasks: Task[];
+  isPublic: boolean;
 };
 
 const KanbanBoard = (props: BoardProps) => {
-  const { name, tasks: taskData } = props;
+  const { name, isPublic, tasks: taskData } = props;
   const [columns, setColumns] = useState<Column[]>(columnData);
   const [taskActivities, setTaskActivities] =
     useState<TaskActivity[]>(taskActivityData);
 
-  const [activeColumn, setActiveColumn] = useState<Column | null>();
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>();
   const [openAddTask, setOpenAddTask] = useState(false);
+  const [openEditTask, setOpenEditTask] = useState(false);
+
   const columnIds = useMemo(() => columns.map((col) => col.id), [columns]);
 
   const sensors = useSensors(
@@ -44,14 +46,10 @@ const KanbanBoard = (props: BoardProps) => {
     })
   );
 
-
   // Task
   const openCreateTaskModal = () => {
     setOpenAddTask(true);
   };
-
-  const createTask = () => {};
-
 
   //  TODO: CAN DELETE TASK CANCEL COLUMN
   // const deleteTask = (taskId: Id) => {
@@ -68,11 +66,8 @@ const KanbanBoard = (props: BoardProps) => {
   // };
   const selectTask = (task: Task) => {
     setSelectedTask(task);
-    // setOpenAddTask(true);
+    setOpenEditTask(true);
   };
-
-  // Task activities
-  const handleClose = () => [setOpenAddTask(false)];
 
   // const handleAddingTaskActivity = (activityContent: string) => {
   //   const newTaskActivity: TaskActivity = {
@@ -189,13 +184,15 @@ const KanbanBoard = (props: BoardProps) => {
                 <div key={col.id} id={col.id.toString()}>
                   <ColumnContainer
                     key={col.id}
+                    isPublic={isPublic}
                     column={col}
                     deleteColumn={deleteColumn}
                     editColumnTitle={editColumnTitle}
-                    tasks={taskData.filter((task: Task) => task.status === col.status)}
+                    tasks={taskData.filter(
+                      (task: Task) => task.status === col.status
+                    )}
                     openAddTask={openCreateTaskModal}
                     selectTask={selectTask}
-                    createTask={createTask}
                     taskActivities={taskActivities}
                   />
                 </div>
@@ -204,20 +201,6 @@ const KanbanBoard = (props: BoardProps) => {
           </SortableContext>
 
           <DragOverlay>
-            {activeColumn && (
-              <ColumnContainer
-                key={activeColumn.id}
-                column={activeColumn}
-                deleteColumn={deleteColumn}
-                selectTask={selectTask}
-                editColumnTitle={editColumnTitle}
-                openAddTask={openCreateTaskModal}
-                tasks={taskData.filter((task) => task.status === activeColumn.id)}
-                createTask={createTask}
-                taskActivities={taskActivities}
-              />
-            )}
-
             {activeTask && (
               <TaskCard
                 selectTask={selectTask}
@@ -230,19 +213,19 @@ const KanbanBoard = (props: BoardProps) => {
       </div>
 
       {/* Modal for editing task */}
-      {/* {selectedTask && (
+      {selectedTask && (
         <EditTaskModal
-          open={openAddTask}
+          open={openEditTask}
           task={selectedTask}
-          taskActivities={taskActivities}
-          addTaskActivity={handleAddingTaskActivity}
-          handleClose={handleClose}
-          editTaskTitle={editTaskTitle}
+          handleClose={() => setOpenEditTask(false)}
         />
-      )} */}
+      )}
 
       {/* Modal add task */}
-      <AddTaskModal open={openAddTask} handleClose={handleClose} />
+      <AddTaskModal
+        open={openAddTask}
+        handleClose={() => setOpenAddTask(false)}
+      />
     </div>
   );
 };

@@ -6,7 +6,7 @@ import { toast, ToastContainer } from "react-toastify";
 import SignUpPage from "./pages/SignUpPage";
 import HomePage from "./pages/HomePage";
 import { useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
+import { decodeToken } from "./utils/helper";
 
 function App() {
   const navigate = useNavigate();
@@ -25,7 +25,8 @@ function App() {
     const storedToken = localStorage.getItem("token");
 
     if (storedToken) {
-      const userInfo = jwtDecode(storedToken) as { exp: number };
+      const userInfo = decodeToken(storedToken);
+      console.log(userInfo)
       const currentTime = Math.floor(Date.now() / 1000);
       
       if (userInfo.exp && userInfo.exp < currentTime) {

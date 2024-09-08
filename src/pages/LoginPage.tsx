@@ -24,7 +24,6 @@ const LoginPage = () => {
     mutationFn: useSignInAccount,
     onSuccess: (response) => {
       const token = response.data.token;
-      // console.log(response.data.token);
       localStorage.setItem("token", token);
       showNotification("success", "Login successfully!");
       navigate("/");

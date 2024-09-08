@@ -14,6 +14,9 @@ import ReactQuill from "react-quill";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CreateTaskInput } from "src/constants/types";
 import { useCreateTask } from "src/api/taskApi";
+import { useSelector } from "react-redux";
+import { RootState } from "src/store";
+
 
 type Props = {
   open: boolean;
@@ -37,6 +40,11 @@ const AddTaskModal = (props: Props) => {
       status: "TO_DO",
     },
   });
+
+  // dispatch redux
+  const role = useSelector((state: RootState) => state.auth.role);
+
+
   const { mutate: createTask } = useCreateTask(); // Hook is called outside onSubmit
 
   const handleDescriptionChange = (content: string) => {
@@ -44,7 +52,6 @@ const AddTaskModal = (props: Props) => {
   };
 
   const onSubmit: SubmitHandler<CreateTaskInput> = (data) => {
-    console.log("submit", data);
     // Convert the date to an ISO 8601 string if needed
     const date = new Date(data.dateTimeFinish);
     const isoDate = date.toISOString();
@@ -63,6 +70,7 @@ const AddTaskModal = (props: Props) => {
     handleClose();
     reset();
   };
+
 
   return (
     <Dialog
@@ -152,6 +160,7 @@ const AddTaskModal = (props: Props) => {
                   type="checkbox"
                   id="publicCheckbox"
                   className="w-5 h-5"
+                  disabled={role === "MEMBER"}
                   {...register("isPublic")}
                 />
                 <label

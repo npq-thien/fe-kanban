@@ -1,15 +1,18 @@
 import { CircularProgress, Menu, MenuItem } from "@mui/material";
-import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
 import { BsKanbanFill } from "react-icons/bs";
 import { FaSearch } from "react-icons/fa";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useGetAllTasks } from "src/api/taskApi";
 import KanbanBoard from "src/components/KanbanBoard";
 import { Task } from "src/constants/types";
+import { setRole } from "src/store/authSlice";
+import { decodeToken } from "src/utils/helper";
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [user, setUser] = useState<any>(null);
   const [anchorProfile, setAnchorProfile] = useState<null | HTMLElement>(null);
   const openProfileMenu = Boolean(anchorProfile);
@@ -18,9 +21,11 @@ const HomePage = () => {
     const storedToken = localStorage.getItem("token");
 
     if (storedToken) {
-      const userInfo = jwtDecode(storedToken) as { exp: number };
-      console.log("user", userInfo);
+      const userInfo = decodeToken(storedToken);
       setUser(userInfo);
+
+      // set role using redux
+      dispatch(setRole(userInfo.role));
 
       const currentTime = Math.floor(Date.now() / 1000);
       if (userInfo.exp && userInfo.exp < currentTime) {
@@ -30,10 +35,10 @@ const HomePage = () => {
     } else {
       navigate("/login");
     }
-  }, [navigate]);
+  }, [navigate, dispatch]);
 
   const { data, isLoading } = useGetAllTasks();
-  if (data) console.log("data in home changed", data.data.tasks);
+  // if (data) console.log("data in home changed", data.data.tasks);
 
   if (isLoading) {
     return (
@@ -102,13 +107,17 @@ const HomePage = () => {
       {data && (
         <>
           <div className="h-[100vh] mt-20">
-            <KanbanBoard tasks={data.data.tasks} />
+            <KanbanBoard isPublic={false} tasks={data.data.tasks} />
           </div>
 
           <div className="h-1 w-full px-8 bg-red-400"></div>
 
           <div className="h-[100vh]">
-            <KanbanBoard tasks={data.data.tasks.filter((task: Task) => task.isPublic)} name="Public tasks" />
+            <KanbanBoard
+              isPublic={true}
+              tasks={data.data.tasks.filter((task: Task) => task.isPublic)}
+              name="Public tasks"
+            />
           </div>
         </>
       )}

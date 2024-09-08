@@ -16,8 +16,8 @@ type Props = {
 };
 
 const TaskCard = (props: Props) => {
-  const { task, deleteTask, selectTask, taskActivities } = props;
-  const [openDeleteTask, setOpenDeleteTask] = useState(false);
+  const { task, selectTask, taskActivities } = props;
+  // const [openDeleteTask, setOpenDeleteTask] = useState(false);
   const [activityByTask, setActivityByTask] = useState<TaskActivity[]>([]);
 
   // console.log('in task', task)

@@ -1,5 +1,5 @@
 import { CSS } from "@dnd-kit/utilities";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
@@ -15,8 +15,11 @@ import {
   MenuItem,
 } from "@mui/material";
 import TaskCard from "./TaskCard";
+import { useSelector } from "react-redux";
+import { RootState } from "src/store";
 
 type Props = {
+  isPublic: boolean;
   column: Column;
   deleteColumn: (id: Id) => void;
   editColumnTitle: (id: Id, title: string) => void;
@@ -24,7 +27,6 @@ type Props = {
   tasks: Task[];
   openAddTask: () => void;
   selectTask: (task: Task) => void;
-  createTask: (columnId: Id, taskTitle: string) => void;
   editTaskTitle?: (taskId: Id, newTaskTitle: string) => void;
 
   taskActivities: TaskActivity[];
@@ -32,19 +34,20 @@ type Props = {
 
 const ColumnContainer = (props: Props) => {
   const {
+    isPublic,
     column,
     deleteColumn,
     editColumnTitle,
     tasks,
     selectTask,
-    createTask,
     openAddTask,
     taskActivities,
   } = props;
 
+  const role = useSelector((state: RootState) => state.auth.role);
+
   // console.log('in column', tasks)
 
-  
   const [taskTitle, setTaskTitle] = useState("");
   const [isEditTitle, setIsEditTitle] = useState(false);
   const taskIds = useMemo(() => {
@@ -71,14 +74,6 @@ const ColumnContainer = (props: Props) => {
     setOpenMenu(false);
   };
 
-  // CRUD Task
-  const handleAddTask = () => {
-    if (taskTitle.trim()) {
-      createTask(column.id, taskTitle);
-      setTaskTitle("");
-    }
-  };
-
   // Confirm delete
   const handleOpenDeleteColumn = () => {
     setOpenDeleteColumn(true);
@@ -100,7 +95,6 @@ const ColumnContainer = (props: Props) => {
       ref={setNodeRef}
       style={style}
       className="w-[250px] h-full flex flex-col gap-4 bg-gradient-to-b from-cream-4 to-[rgba(255,255,255,0.1)] rounded-lg p-2"
-      // className="w-[250px] h-full flex flex-col gap-4 bg-cream-3 rounded-lg p-2 relative"
       id={column.id.toString()}
     >
       <Menu
@@ -174,7 +168,8 @@ const ColumnContainer = (props: Props) => {
         </SortableContext>
       </div>
 
-      {column.title === "Open🔘" && (
+      {/* Only admin and board isPublic show button to add public task */}
+      {column.title === "Open🔘" && (role === "ADMIN" || !isPublic ) && (
         <button
           className="flex-center py-1 gap-2 btn-primary w-full"
           onClick={openAddTask}

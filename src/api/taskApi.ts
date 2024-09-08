@@ -1,13 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { api, BASE_URL } from "src/configs/AxiosConfig";
 import { QUERY_KEYS } from "./queryKey";
-import { CreateTaskInput } from "src/constants/types";
+import { CreateTaskInput, UpdateTaskInput } from "src/constants/types";
 
 export const useGetAllTasks = () => {
   const fetchData = async () => {
     try {
       const response = await api.get(`${BASE_URL}/api/task`);
-      console.log('i fetched')
       return response.data;
     } catch (error) {
       console.log("Fetch data all tasks failed: ", error);
@@ -31,11 +30,37 @@ export const useCreateTask = () => {
       return response.data;
     },
     onSuccess: () => {
-      console.log("Create task success");
       queryClient.invalidateQueries([QUERY_KEYS.GET_ALL_TASKS]);
     },
     onError: (error) => {
       console.log("Create task failed", error);
+    },
+  });
+};
+
+export const useUpdateTask = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      taskId,
+      updatedTask,
+    }: {
+      taskId: string;
+      updatedTask: UpdateTaskInput;
+    }) => {
+      const response = await api.put(
+        `${BASE_URL}/api/task/${taskId}`,
+        updatedTask
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      console.log("oke");
+      queryClient.invalidateQueries([QUERY_KEYS.GET_ALL_TASKS]);
+    },
+    onError: (error) => {
+      console.log("Update task failed", error);
     },
   });
 };

@@ -1,4 +1,4 @@
-export type Id = string | number;
+export type Id = string;
 
 // Auth
 export type SignUpInput = {
@@ -12,11 +12,12 @@ export type LoginInput = {
   password: string;
 };
 
-export type TokenInfo = {
-  userId: string;
-  displayName: string;
-  expirationTime: Date;
-};
+// export type TokenInfo = {
+//   userId: string;
+//   displayName: string;
+//   expirationTime: Date;
+//   role: string;
+// };
 
 // Task
 export type CreateTaskInput = {
@@ -27,6 +28,15 @@ export type CreateTaskInput = {
   description: string;
 };
 
+export type UpdateTaskInput = {
+  name: string;
+  status: string;
+  dateTimeFinish: string;
+  isPublic: boolean;
+  description: string;
+  assignedUserId?: string;
+};
+
 // Business
 export type Column = {
   id: Id;
@@ -35,7 +45,7 @@ export type Column = {
 };
 
 export type Task = {
-  id: Id;
+  id: string;
   name: string;
   status: string;
   isPublic: boolean;

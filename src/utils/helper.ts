@@ -1,3 +1,5 @@
+import { jwtDecode } from "jwt-decode";
+
 export const generateId = () => {
   return Math.floor(Math.random() * 10001);
 };
@@ -23,4 +25,9 @@ export const formatDueDate = (date: string): string => {
   const onlyDate = date.split("T")[0];
   const formatedDate = onlyDate.split("-").reverse();
   return formatedDate.join("-");
+};
+
+export const decodeToken = (token: string) => {
+  const userInfo = jwtDecode(token) as { exp: number; role: string };
+  return userInfo;
 };
