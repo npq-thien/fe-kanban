@@ -1,5 +1,5 @@
 import "./App.css";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 
 import LoginPage from "./pages/LoginPage";
 import { toast, ToastContainer } from "react-toastify";
@@ -10,6 +10,7 @@ import { decodeToken } from "./utils/helper";
 
 function App() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const notify = (message: string, type: "success" | "error" | "warn") => {
     const toastTypes = {
@@ -23,6 +24,11 @@ function App() {
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
+
+    // If the current location is "/login" or "/signup", skip token validation
+    if (location.pathname === "/login" || location.pathname === "/signup") {
+      return;
+    }
 
     if (storedToken) {
       const userInfo = decodeToken(storedToken);

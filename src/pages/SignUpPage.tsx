@@ -3,7 +3,7 @@ import { useMutation } from "react-query";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 
-import { useSignInAccount, useSignUpAccount } from "src/api/authApi";
+import { useSignUpAccount } from "src/api/authApi";
 import "react-toastify/dist/ReactToastify.css";
 import { useRef, useState } from "react";
 
