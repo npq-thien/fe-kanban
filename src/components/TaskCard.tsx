@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Id, Task, TaskActivity } from "../constants/types";
 import { formatDueDate } from "src/utils/helper";
 import { FaRegClock } from "react-icons/fa";
+import { HiUserGroup } from "react-icons/hi";
 
 type Props = {
   task: Task;
@@ -33,7 +34,6 @@ const TaskCard = (props: Props) => {
   //   event.stopPropagation(); // Prevents the click event from the parent div (openEdit)
   //   setOpenDeleteTask(true);
   // };
-
 
   const {
     setNodeRef,
@@ -107,6 +107,7 @@ const TaskCard = (props: Props) => {
             <FaRegClock />
             {formatDueDate(task.dateTimeFinish.toString())}
           </p>
+          {task.isPublic && <HiUserGroup className="text-orange-500" />}
           {activityByTask.length > 0 && (
             <div className="flex items-center gap-1">
               <IoChatbubbleEllipsesOutline />

@@ -44,7 +44,6 @@ const ColumnContainer = (props: Props) => {
 
   // console.log('in column', tasks)
 
-  const [taskTitle, setTaskTitle] = useState("");
   const [isEditTitle, setIsEditTitle] = useState(false);
   const taskIds = useMemo(() => {
     return tasks.map((task) => task.id);

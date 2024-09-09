@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
-import { Column, Id, Task, TaskActivity } from "../constants/types";
+import { Task, TaskActivity } from "../constants/types";
 import ColumnContainer from "./ColumnContainer";
 import {
   columnData,
@@ -31,7 +31,7 @@ type BoardProps = {
 
 const KanbanBoard = (props: BoardProps) => {
   const { name, isPublic, tasks: taskData } = props;
-  const [columns, setColumns] = useState<Column[]>(columnData);
+  const columns = columnData;
   const [taskActivities, setTaskActivities] =
     useState<TaskActivity[]>(taskActivityData);
 
@@ -49,7 +49,7 @@ const KanbanBoard = (props: BoardProps) => {
     })
   );
 
-  console.log('in board', isPublic, taskData)
+  console.log("in board", isPublic, taskData);
 
   // Task
   const openCreateTaskModal = () => {

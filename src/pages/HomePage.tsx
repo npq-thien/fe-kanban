@@ -40,7 +40,7 @@ const HomePage = () => {
 
   const { data, isLoading } = useGetUserTasks(user?.sub || "");
 
-  if (data) console.log("data in home changed", data.data.tasks);
+  // if (data) console.log("data in home changed", data.data.tasks);
 
   if (isLoading) {
     return (

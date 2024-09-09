@@ -63,8 +63,9 @@ export type Task = {
   dateTimeStart: Date;
   dateTimeFinish: Date;
   creatorDisplayName: string;
-  assignedUserId: string;
   priority?: string;
+  assignedUserId: string;
+  assignedUserDisplayName: string;
 };
 
 export type TaskActivity = {

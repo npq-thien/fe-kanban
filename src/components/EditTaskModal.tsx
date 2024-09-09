@@ -4,7 +4,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@mui/material";
-import { MdOutlineSubtitles } from "react-icons/md";
+import { MdAssignmentInd, MdOutlineSubtitles } from "react-icons/md";
 import { BsTextParagraph } from "react-icons/bs";
 import { IoMdClose } from "react-icons/io";
 import "react-quill/dist/quill.snow.css";
@@ -13,10 +13,11 @@ import { FaList, FaRegClock } from "react-icons/fa";
 import ReactQuill from "react-quill";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Task, UpdateTaskInput } from "src/constants/types";
-import { useUpdateTask } from "src/api/taskApi";
+import { useTakeTask, useUpdateTask } from "src/api/taskApi";
 import { useSelector } from "react-redux";
 import { RootState } from "src/store";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { showNotification } from "src/utils/notificationUtil";
 
 type Props = {
   open: boolean;
@@ -57,12 +58,12 @@ const EditTaskModal = (props: Props) => {
   }, [task, setValue]);
 
   const { mutate: updateTask } = useUpdateTask();
+  const { mutate: takeTask } = useTakeTask();
 
   const handleDescriptionChange = (content: string) => {
     setTaskDescription(content);
     setValue("description", content);
   };
-
 
   const onSubmit: SubmitHandler<UpdateTaskInput> = (data) => {
     // console.log("submit", data);
@@ -85,6 +86,18 @@ const EditTaskModal = (props: Props) => {
     handleClose();
     setIsEditingDescription(false);
     reset();
+  };
+
+  const handleTakeTask = () => {
+    takeTask(task.id, {
+      onSuccess: () => {
+        showNotification("success", "Take task successfully!");
+        handleClose();
+      },
+      onError: (error) => {
+        showNotification("error", "Take task failed!" + error);
+      },
+    });
   };
 
   return (
@@ -184,6 +197,29 @@ const EditTaskModal = (props: Props) => {
                   Public
                 </label>
               </div>
+            </div>
+
+            {/* Assigned user */}
+            <div className="flex items-center gap-4">
+              <h3 className="flex items-center text-lg font-semibold gap-4">
+                <MdAssignmentInd />
+                Assignee
+              </h3>
+              {task.assignedUserId ? (
+                <div className="font-semibold bg-white p-1 px-2 rounded-md">
+                  {task.assignedUserDisplayName}
+                </div>
+              ) : (
+                <>
+                  <p className="text-red-500">No one assigned</p>
+                  <button
+                    className="btn-primary bg-gold"
+                    onClick={handleTakeTask}
+                  >
+                    Take
+                  </button>
+                </>
+              )}
             </div>
 
             {/* Description */}
