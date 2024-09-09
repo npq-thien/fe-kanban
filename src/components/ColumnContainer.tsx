@@ -140,7 +140,6 @@ const ColumnContainer = (props: Props) => {
         </div>
         <button
           className="p-1 rounded-md hover:bg-light-3"
-          // onClick={() => openDeleteColumn(column.id)}
           onClick={(e) => {
             setAnchorMenu(e.currentTarget);
             setOpenMenu(true);

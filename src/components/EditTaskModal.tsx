@@ -16,7 +16,7 @@ import { Task, UpdateTaskInput } from "src/constants/types";
 import { useUpdateTask } from "src/api/taskApi";
 import { useSelector } from "react-redux";
 import { RootState } from "src/store";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Props = {
   open: boolean;
@@ -26,8 +26,6 @@ type Props = {
 };
 
 const EditTaskModal = (props: Props) => {
-  const { open, task, handleClose } = props;
-  const role = useSelector((state: RootState) => state.auth.role);
   const {
     register,
     handleSubmit,
@@ -35,6 +33,12 @@ const EditTaskModal = (props: Props) => {
     reset,
     formState: { errors },
   } = useForm<UpdateTaskInput>();
+  const { open, task, handleClose } = props;
+  const role = useSelector((state: RootState) => state.auth.role);
+  const [taskDescription, setTaskDescription] = useState(
+    task.description || ""
+  );
+  const [isEditingDescription, setIsEditingDescription] = useState(false);
 
   // console.log("task modal", task);
 
@@ -55,11 +59,13 @@ const EditTaskModal = (props: Props) => {
   const { mutate: updateTask } = useUpdateTask();
 
   const handleDescriptionChange = (content: string) => {
+    setTaskDescription(content);
     setValue("description", content);
   };
 
+
   const onSubmit: SubmitHandler<UpdateTaskInput> = (data) => {
-    console.log("submit", data);
+    // console.log("submit", data);
     // Convert the date to an ISO 8601 string if needed
     const date = new Date(data.dateTimeFinish);
     const isoDate = date.toISOString();
@@ -72,10 +78,12 @@ const EditTaskModal = (props: Props) => {
         },
       }
     );
+    setIsEditingDescription(false);
   };
 
   const handleCloseModal = () => {
     handleClose();
+    setIsEditingDescription(false);
     reset();
   };
 
@@ -187,13 +195,18 @@ const EditTaskModal = (props: Props) => {
                 </h3>
               </div>
 
-              {task.description ? (
+              {task.description && !isEditingDescription ? (
                 <div
-                  className="p-1 bg-white rounded-md"
+                  className="p-1 px-2 bg-white rounded-md"
                   dangerouslySetInnerHTML={{ __html: task.description }}
+                  onClick={() => setIsEditingDescription(true)}
                 ></div>
               ) : (
-                <ReactQuill theme="snow" onChange={handleDescriptionChange} />
+                <ReactQuill
+                  theme="snow"
+                  value={taskDescription}
+                  onChange={handleDescriptionChange}
+                />
               )}
             </div>
           </div>

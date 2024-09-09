@@ -63,6 +63,7 @@ export type Task = {
   dateTimeStart: Date;
   dateTimeFinish: Date;
   creatorDisplayName: string;
+  assignedUserId: string;
   priority?: string;
 };
 

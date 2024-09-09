@@ -4,9 +4,9 @@ import { BsKanbanFill } from "react-icons/bs";
 import { FaSearch } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { useGetAllTasks, useGetUserTasks } from "src/api/taskApi";
+import { useGetUserTasks } from "src/api/taskApi";
 import KanbanBoard from "src/components/KanbanBoard";
-import { Task, UserInfo } from "src/constants/types";
+import { Task } from "src/constants/types";
 import { setRole } from "src/store/authSlice";
 import { decodeToken } from "src/utils/helper";
 
@@ -40,7 +40,6 @@ const HomePage = () => {
 
   const { data, isLoading } = useGetUserTasks(user?.sub || "");
 
-  // console.log('userid', user.sub);
   if (data) console.log("data in home changed", data.data.tasks);
 
   if (isLoading) {
@@ -109,8 +108,14 @@ const HomePage = () => {
 
       {data && (
         <>
+          {/* Private task show the private (assigned) task and public task they take */}
           <div className="h-[100vh] mt-20">
-            <KanbanBoard isPublic={false} tasks={data.data.tasks} />
+            <KanbanBoard
+              isPublic={false}
+              tasks={data.data.tasks.filter(
+                (task: Task) => task.assignedUserId === user.sub
+              )}
+            />
           </div>
 
           <div className="h-1 w-full px-8 bg-red-400"></div>
