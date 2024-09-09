@@ -21,8 +21,6 @@ import { RootState } from "src/store";
 type Props = {
   isPublic: boolean;
   column: Column;
-  deleteColumn: (id: Id) => void;
-  editColumnTitle: (id: Id, title: string) => void;
 
   tasks: Task[];
   openAddTask: () => void;
@@ -36,8 +34,6 @@ const ColumnContainer = (props: Props) => {
   const {
     isPublic,
     column,
-    deleteColumn,
-    editColumnTitle,
     tasks,
     selectTask,
     openAddTask,
@@ -87,7 +83,6 @@ const ColumnContainer = (props: Props) => {
   const handleConfirmDeleteColumn = () => {
     setOpenDeleteColumn(false);
     setOpenMenu(false);
-    deleteColumn(column.id);
   };
 
   return (
@@ -136,7 +131,6 @@ const ColumnContainer = (props: Props) => {
               className="rounded-md max-w-48 p-1 focus:border-blue-500 outline-none border"
               autoFocus
               value={column.title}
-              onChange={(e) => editColumnTitle(column.id, e.target.value)}
               onBlur={() => setIsEditTitle(false)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") setIsEditTitle(false);
