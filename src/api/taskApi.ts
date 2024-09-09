@@ -99,3 +99,20 @@ export const useTakeTask = () => {
     },
   });
 };
+
+export const useDropTask = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (taskId: string) => {
+      const response = await api.put(`${BASE_URL}/api/task/drop/${taskId}`);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries([QUERY_KEYS.GET_USER_TASKS]);
+    },
+    onError: (error) => {
+      console.log("Take task failed", error);
+    },
+  });
+};

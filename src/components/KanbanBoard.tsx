@@ -49,7 +49,7 @@ const KanbanBoard = (props: BoardProps) => {
     })
   );
 
-  console.log("in board", isPublic, taskData);
+  // console.log("in board", isPublic, taskData);
 
   // Task
   const openCreateTaskModal = () => {

@@ -13,7 +13,7 @@ import { FaList, FaRegClock } from "react-icons/fa";
 import ReactQuill from "react-quill";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Task, UpdateTaskInput } from "src/constants/types";
-import { useTakeTask, useUpdateTask } from "src/api/taskApi";
+import { useDropTask, useTakeTask, useUpdateTask } from "src/api/taskApi";
 import { useSelector } from "react-redux";
 import { RootState } from "src/store";
 import { useEffect, useState } from "react";
@@ -35,11 +35,16 @@ const EditTaskModal = (props: Props) => {
     formState: { errors },
   } = useForm<UpdateTaskInput>();
   const { open, task, handleClose } = props;
-  const role = useSelector((state: RootState) => state.auth.role);
+  const currentUser = useSelector((state: RootState) => state.auth);
+
   const [taskDescription, setTaskDescription] = useState(
     task.description || ""
   );
   const [isEditingDescription, setIsEditingDescription] = useState(false);
+
+  const { mutate: updateTask } = useUpdateTask();
+  const { mutate: takeTask } = useTakeTask();
+  const { mutate: dropTask } = useDropTask();
 
   // console.log("task modal", task);
 
@@ -56,9 +61,6 @@ const EditTaskModal = (props: Props) => {
       setValue("status", task.status);
     }
   }, [task, setValue]);
-
-  const { mutate: updateTask } = useUpdateTask();
-  const { mutate: takeTask } = useTakeTask();
 
   const handleDescriptionChange = (content: string) => {
     setTaskDescription(content);
@@ -96,6 +98,18 @@ const EditTaskModal = (props: Props) => {
       },
       onError: (error) => {
         showNotification("error", "Take task failed!" + error);
+      },
+    });
+  };
+
+  const handleDropTask = () => {
+    dropTask(task.id, {
+      onSuccess: () => {
+        showNotification("success", "Drop task successfully!");
+        handleClose();
+      },
+      onError: (error) => {
+        showNotification("error", "Drop task failed!" + error);
       },
     });
   };
@@ -187,7 +201,7 @@ const EditTaskModal = (props: Props) => {
                   type="checkbox"
                   id="publicCheckbox"
                   className="w-5 h-5"
-                  disabled={role === "MEMBER"}
+                  disabled={currentUser.role === "MEMBER"}
                   {...register("isPublic")}
                 />
                 <label
@@ -206,9 +220,22 @@ const EditTaskModal = (props: Props) => {
                 Assignee
               </h3>
               {task.assignedUserId ? (
-                <div className="font-semibold bg-white p-1 px-2 rounded-md">
-                  {task.assignedUserDisplayName}
-                </div>
+                <>
+                  <div className="font-semibold bg-white p-1 px-2 rounded-md">
+                    {task.assignedUserDisplayName}
+                  </div>
+                  {/* Only task's owner can drop the public task in TODO status */}
+                  {task.assignedUserId === currentUser.userId &&
+                    task.isPublic &&
+                    task.status === "TO_DO" && (
+                      <button
+                        className="btn-primary bg-gold"
+                        onClick={handleDropTask}
+                      >
+                        Drop
+                      </button>
+                    )}
+                </>
               ) : (
                 <>
                   <p className="text-red-500">No one assigned</p>
