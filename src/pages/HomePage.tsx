@@ -4,9 +4,9 @@ import { BsKanbanFill } from "react-icons/bs";
 import { FaSearch } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { useGetAllTasks } from "src/api/taskApi";
+import { useGetAllTasks, useGetUserTasks } from "src/api/taskApi";
 import KanbanBoard from "src/components/KanbanBoard";
-import { Task } from "src/constants/types";
+import { Task, UserInfo } from "src/constants/types";
 import { setRole } from "src/store/authSlice";
 import { decodeToken } from "src/utils/helper";
 
@@ -23,6 +23,7 @@ const HomePage = () => {
     if (storedToken) {
       const userInfo = decodeToken(storedToken);
       setUser(userInfo);
+      console.log("user info", userInfo);
 
       // set role using redux
       dispatch(setRole(userInfo.role));
@@ -37,8 +38,10 @@ const HomePage = () => {
     }
   }, [navigate, dispatch]);
 
-  const { data, isLoading } = useGetAllTasks();
-  // if (data) console.log("data in home changed", data.data.tasks);
+  const { data, isLoading } = useGetUserTasks(user?.sub || "");
+
+  // console.log('userid', user.sub);
+  if (data) console.log("data in home changed", data.data.tasks);
 
   if (isLoading) {
     return (

@@ -12,6 +12,16 @@ export type LoginInput = {
   password: string;
 };
 
+// // decode from jwt token
+export type UserInfo = {
+  sub: string,
+  displayName: string,
+  iss: string,
+  role: string,
+  exp: number,
+  iat: number,
+}
+
 // export type TokenInfo = {
 //   userId: string;
 //   displayName: string;

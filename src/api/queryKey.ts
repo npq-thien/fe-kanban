@@ -6,6 +6,7 @@ export const QUERY_KEYS = {
   // TASK KEYS
   CREATE_TASK: "createTask",
   GET_ALL_TASKS: "getAllTasks",
+  GET_USER_TASKS: "getUserTasks",
 
   // ROOM KEYS
 };

@@ -21,6 +21,25 @@ export const useGetAllTasks = () => {
   });
 };
 
+export const useGetUserTasks = (userId: string) => {
+  const fetchData = async () => {
+    try {
+      const response = await api.get(`${BASE_URL}/api/task/${userId}`);
+      return response.data;
+    } catch (error) {
+      console.log("Fetch data user tasks failed: ", error);
+    }
+  };
+
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_USER_TASKS, userId],
+    queryFn: fetchData,
+    onError: (error) => console.log("Get user tasks failed: ", error),
+    refetchOnWindowFocus: false,
+    enabled: !!userId,
+  });
+};
+
 export const useCreateTask = () => {
   const queryClient = useQueryClient();
 
@@ -30,7 +49,7 @@ export const useCreateTask = () => {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries([QUERY_KEYS.GET_ALL_TASKS]);
+      queryClient.invalidateQueries([QUERY_KEYS.GET_USER_TASKS]);
     },
     onError: (error) => {
       console.log("Create task failed", error);
@@ -57,7 +76,7 @@ export const useUpdateTask = () => {
     },
     onSuccess: () => {
       console.log("oke");
-      queryClient.invalidateQueries([QUERY_KEYS.GET_ALL_TASKS]);
+      queryClient.invalidateQueries([QUERY_KEYS.GET_USER_TASKS]);
     },
     onError: (error) => {
       console.log("Update task failed", error);

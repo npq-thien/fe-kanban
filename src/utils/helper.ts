@@ -1,4 +1,5 @@
 import { jwtDecode } from "jwt-decode";
+import { UserInfo } from "src/constants/types";
 
 export const generateId = () => {
   return Math.floor(Math.random() * 10001);
@@ -27,7 +28,7 @@ export const formatDueDate = (date: string): string => {
   return formatedDate.join("-");
 };
 
-export const decodeToken = (token: string) => {
-  const userInfo = jwtDecode(token) as { exp: number; role: string };
+export const decodeToken = (token: string): UserInfo => {
+  const userInfo = jwtDecode<UserInfo>(token);
   return userInfo;
 };
