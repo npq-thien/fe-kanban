@@ -104,6 +104,12 @@ const KanbanBoard = (props: BoardProps) => {
 
     const isActiveTask = active.data.current?.type === "Task";
     const isOverAColumn = over.data.current?.type === "Column";
+    console.log(
+      "DRAG TASK: Active:",
+      active.data.current,
+      "Over:",
+      over.data.current
+    );
 
     if (isActiveTask && isOverAColumn) {
       console.log("Task moved to column:");
@@ -122,21 +128,14 @@ const KanbanBoard = (props: BoardProps) => {
     const isActiveTask = active.data.current?.type === "Task";
     const isOverTask = over.data.current?.type === "Task";
 
-    console.log("DRAG_OVER: Active task ID:", activeId, "Over ID:", overId);
+    // console.log("DRAG TASK: Active:", active, "Over task", over);
+    // console.log("DRAG_OVER: Active task ID:", activeId, "Over ID:", overId);
+
     if (!isActiveTask) return;
 
     // Drop a task over another task
-    // if (isActiveTask && isOverTask) {
-    //   setTasks((tasks) => {
-    //     const activeIndex = tasks.findIndex((task) => task.id === activeId);
-    //     const overIndex = tasks.findIndex((task) => task.id === overId);
-
-    //     tasks[activeIndex].columnId = tasks[overIndex].columnId;
-    //     // console.log("move task", activeIndex, overIndex)
-
-    //     return arrayMove(tasks, activeIndex, overIndex);
-    //   });
-    // }
+    if (isActiveTask && isOverTask) {
+    }
 
     // Drop a task over a column
     const isOverAColumn = over.data.current?.type === "Column";
@@ -178,12 +177,44 @@ const KanbanBoard = (props: BoardProps) => {
         <p className="text-xl font-semibold">{name}</p>
       </div>
       <div className="flex gap-2 p-4">
-        <DndContext
-          sensors={sensors}
-          onDragStart={onDragStart}
-          onDragEnd={onDragEnd}
-          onDragOver={onDragOver}
-        >
+        {/* Enable DND in private board */}
+        {!isPublic ? (
+          // Enable drag-and-drop when isPublic is true
+          <DndContext
+            sensors={sensors}
+            onDragStart={onDragStart}
+            onDragEnd={onDragEnd}
+            onDragOver={onDragOver}
+          >
+            <div className="flex gap-4">
+              {columns.map((col) => (
+                <div key={col.id} id={col.id.toString()}>
+                  <ColumnContainer
+                    key={col.id}
+                    isPublic={isPublic}
+                    column={col}
+                    tasks={taskData.filter(
+                      (task: Task) => task.status === col.status
+                    )}
+                    openAddTask={openCreateTaskModal}
+                    selectTask={selectTask}
+                    taskActivities={taskActivities}
+                  />
+                </div>
+              ))}
+            </div>
+            <DragOverlay>
+              {activeTask && (
+                <TaskCard
+                  selectTask={selectTask}
+                  task={activeTask}
+                  taskActivities={taskActivities}
+                />
+              )}
+            </DragOverlay>
+          </DndContext>
+        ) : (
+          // Render without drag-and-drop when isPublic is false
           <div className="flex gap-4">
             {columns.map((col) => (
               <div key={col.id} id={col.id.toString()}>
@@ -201,17 +232,7 @@ const KanbanBoard = (props: BoardProps) => {
               </div>
             ))}
           </div>
-
-          <DragOverlay>
-            {activeTask && (
-              <TaskCard
-                selectTask={selectTask}
-                task={activeTask}
-                taskActivities={taskActivities}
-              />
-            )}
-          </DragOverlay>
-        </DndContext>
+        )}
       </div>
 
       {/* Modal for editing task */}

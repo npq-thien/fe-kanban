@@ -58,7 +58,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="overflow-x-auto min-h-[100vh] w-full bg-gradient-to-r from-[#FEC362] via-[#ECE854] to-[#5B9DFF]">
+    <div className="overflow-x-auto min-h-[200vh] w-full bg-gradient-to-r from-[#FEC362] via-[#ECE854] to-[#5B9DFF]">
       <nav className="fixed top-0 w-full bg-gray-200 p-4 flex items-center justify-between gap-4 border-b-2 border-black z-10">
         <Menu
           open={openProfileMenu}
@@ -110,7 +110,7 @@ const HomePage = () => {
       {data && (
         <>
           {/* Private task show the private (assigned) task and public task they take */}
-          <div className="h-[50vh] mt-20">
+          <div className="h-[100vh] mt-20">
             <KanbanBoard
               isPublic={false}
               tasks={data.data.tasks.filter(

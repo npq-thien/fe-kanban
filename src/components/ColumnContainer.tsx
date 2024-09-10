@@ -112,8 +112,6 @@ const ColumnContainer = (props: Props) => {
         </div>
       </Menu>
       <header
-        // {...listeners}
-        // {...attributes}
         className="sticky top-0 flex-between gap-2 font-bold"
       >
         <div
@@ -148,7 +146,7 @@ const ColumnContainer = (props: Props) => {
         </button>
       </header>
       <div className="flex flex-col gap-2 overflow-auto">
-        <SortableContext items={taskIds}>
+        <SortableContext items={taskIds} id={column.status} >
           {tasks.map((task) => (
             <TaskCard
               key={task.id}
