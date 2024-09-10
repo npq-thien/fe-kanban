@@ -1,7 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { api, BASE_URL } from "src/configs/AxiosConfig";
 import { QUERY_KEYS } from "./queryKey";
-import { CreateTaskInput, UpdateTaskInput } from "src/constants/types";
+import {
+  CreateTaskInput,
+  MoveTaskInput,
+  UpdateTaskInput,
+} from "src/constants/types";
 
 export const useGetAllTasks = () => {
   const fetchData = async () => {
@@ -109,6 +113,25 @@ export const useDropTask = () => {
       return response.data;
     },
     onSuccess: () => {
+      queryClient.invalidateQueries([QUERY_KEYS.GET_USER_TASKS]);
+    },
+    onError: (error) => {
+      console.log("Take task failed", error);
+    },
+  });
+};
+
+export const useMoveTask = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (request: MoveTaskInput) => {
+      console.log('call something', request)
+      const response = await api.put(`${BASE_URL}/api/task/move`, request);
+      return response.data;
+    },
+    onSuccess: () => {
+      console.log("move task ok");
       queryClient.invalidateQueries([QUERY_KEYS.GET_USER_TASKS]);
     },
     onError: (error) => {

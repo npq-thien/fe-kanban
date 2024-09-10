@@ -14,13 +14,13 @@ export type LoginInput = {
 
 // // decode from jwt token
 export type UserInfo = {
-  sub: string,
-  displayName: string,
-  iss: string,
-  role: string,
-  exp: number,
-  iat: number,
-}
+  sub: string;
+  displayName: string;
+  iss: string;
+  role: string;
+  exp: number;
+  iat: number;
+};
 
 // export type TokenInfo = {
 //   userId: string;
@@ -47,6 +47,13 @@ export type UpdateTaskInput = {
   assignedUserId?: string;
 };
 
+export type MoveTaskInput = {
+  taskId: string;
+  startPosition: number;
+  overPosition: number;
+  status: string;
+};
+
 // Business
 export type Column = {
   id: Id;
@@ -58,6 +65,7 @@ export type Task = {
   id: string;
   name: string;
   status: string;
+  position: number;
   isPublic: boolean;
   description: string;
   dateTimeStart: Date;

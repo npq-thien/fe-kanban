@@ -16,12 +16,12 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 
 import TaskCard from "./TaskCard";
 import AddTaskModal from "./AddTaskModal";
 import EditTaskModal from "./EditTaskModal";
-import { useUpdateTask } from "src/api/taskApi";
+import { useMoveTask, useUpdateTask } from "src/api/taskApi";
+import { showNotification } from "src/utils/notificationUtil";
 
 type BoardProps = {
   name?: string;
@@ -41,6 +41,8 @@ const KanbanBoard = (props: BoardProps) => {
   const [openEditTask, setOpenEditTask] = useState(false);
 
   const { mutate: updateTask } = useUpdateTask();
+  const { mutate: moveTask } = useMoveTask();
+
   const sensors = useSensors(
     useSensor(MouseSensor, {
       activationConstraint: {
@@ -103,16 +105,37 @@ const KanbanBoard = (props: BoardProps) => {
     if (activeId === overId) return;
 
     const isActiveTask = active.data.current?.type === "Task";
-    const isOverAColumn = over.data.current?.type === "Column";
+    const isOverTask = over.data.current?.type === "Task";
+
+    // console.log("DRAG TASK: Active:", active, "Over task", over);
     console.log(
-      "DRAG TASK: Active:",
-      active.data.current,
-      "Over:",
-      over.data.current
+      "DRAG_OVER: Active task ID:",
+      active.data?.current?.sortable.index,
+      "Over ID:",
+      over.data?.current?.sortable.index
     );
 
-    if (isActiveTask && isOverAColumn) {
-      console.log("Task moved to column:");
+    if (!isActiveTask) return;
+
+    // Drop a task over another task
+    if (isActiveTask && isOverTask) {
+        moveTask(
+          {
+            taskId: active.id.toString(),
+            startPosition: active.data?.current?.sortable.index,
+            overPosition: over.data?.current?.sortable.index,
+            status: over.data?.current?.sortable.containerId,
+          },
+          {
+            onSuccess: () => {
+              showNotification("success", "Move OK");
+            },
+            onError: () => {
+              showNotification("warning", "Move failed");
+            },
+          }
+        );
+        // console.log("MOVING", activeId)
     }
   };
 
@@ -128,23 +151,34 @@ const KanbanBoard = (props: BoardProps) => {
     const isActiveTask = active.data.current?.type === "Task";
     const isOverTask = over.data.current?.type === "Task";
 
-    // console.log("DRAG TASK: Active:", active, "Over task", over);
-    // console.log("DRAG_OVER: Active task ID:", activeId, "Over ID:", overId);
+    // // console.log("DRAG TASK: Active:", active, "Over task", over);
+    // // console.log(
+    // //   "DRAG_OVER: Active task ID:",
+    // //   active.data?.current?.sortable.index,
+    // //   "Over ID:",
+    // //   over.data?.current?.sortable.index
+    // // );
 
-    if (!isActiveTask) return;
+    // if (!isActiveTask) return;
 
     // Drop a task over another task
     if (isActiveTask && isOverTask) {
+      // moveTask({
+      //   taskId: active.id.toString(),
+      //   startPosition: active.data?.current?.sortable.index,
+      //   overPosition: over.data?.current?.sortable.index,
+      //   status: over.data?.current?.sortable.containerId,
+      // });
     }
 
     // Drop a task over a column
     const isOverAColumn = over.data.current?.type === "Column";
     if (isActiveTask && isOverAColumn) {
-      console.log("move to column");
+      // console.log("move to column");
       const task = taskData.find((task) => task.id === activeId);
       const column = columns.find((col) => col.id === overId);
 
-      console.log("DRAG_END: Active task ID:", activeId, "Over ID:", overId);
+      // console.log("DRAG_END: Active task ID:", activeId, "Over ID:", overId);
 
       if (task && column) {
         const updatedTask = {

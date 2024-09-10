@@ -45,9 +45,14 @@ const ColumnContainer = (props: Props) => {
   // console.log('in column', tasks)
 
   const [isEditTitle, setIsEditTitle] = useState(false);
-  const taskIds = useMemo(() => {
-    return tasks.map((task) => task.id);
+  
+  const sortedTasks = useMemo(() => {
+    return tasks.slice().sort((a, b) => a.position - b.position); 
   }, [tasks]);
+  // Create an array of task IDs in the sorted order
+  const taskIds = useMemo(() => {
+    return sortedTasks.map((task) => task.id);
+  }, [sortedTasks]);
 
   const [openMenu, setOpenMenu] = useState(false);
   const [anchorMenu, setAnchorMenu] = useState<null | HTMLElement>(null);
@@ -146,8 +151,8 @@ const ColumnContainer = (props: Props) => {
         </button>
       </header>
       <div className="flex flex-col gap-2 overflow-auto">
-        <SortableContext items={taskIds} id={column.status} >
-          {tasks.map((task) => (
+        <SortableContext items={taskIds}  id={column.status} >
+          {sortedTasks.map((task) => (
             <TaskCard
               key={task.id}
               task={task}
