@@ -38,8 +38,6 @@ const ColumnContainer = (props: Props) => {
 
   // console.log('in column', tasks)
 
-  const [isEditTitle, setIsEditTitle] = useState(false);
-
   const sortedTasks = useMemo(() => {
     return tasks.slice().sort((a, b) => a.position - b.position);
   }, [tasks]);
@@ -47,6 +45,9 @@ const ColumnContainer = (props: Props) => {
   const taskIds = useMemo(() => {
     return sortedTasks.map((task) => task.id);
   }, [sortedTasks]);
+
+  console.log('sorted tasks', sortedTasks)
+  console.log('sorted ids', taskIds)
 
   const [openMenu, setOpenMenu] = useState(false);
   const [anchorMenu, setAnchorMenu] = useState<null | HTMLElement>(null);
@@ -111,10 +112,7 @@ const ColumnContainer = (props: Props) => {
         </div>
       </Menu>
       <header className="sticky top-0 flex-between gap-2 font-bold">
-        <div
-          className="flex gap-2 items-center"
-          onClick={() => setIsEditTitle(true)}
-        >
+        <div className="flex gap-2 items-center">
           {column.title}
           <p className="rounded-full bg-light-1 px-2">{tasks.length}</p>
         </div>

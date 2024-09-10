@@ -51,7 +51,8 @@ export type MoveTaskInput = {
   taskId: string;
   startPosition: number;
   overPosition: number;
-  status: string;
+  startStatus: string;
+  overStatus: string;
 };
 
 // Business

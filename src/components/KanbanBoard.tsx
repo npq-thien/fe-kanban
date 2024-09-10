@@ -120,23 +120,24 @@ const KanbanBoard = (props: BoardProps) => {
 
     // Drop a task over another task
     if (isActiveTask && isOverTask) {
-        moveTask(
-          {
-            taskId: active.id.toString(),
-            startPosition: active.data?.current?.sortable.index,
-            overPosition: over.data?.current?.sortable.index,
-            status: over.data?.current?.sortable.containerId,
+      moveTask(
+        {
+          taskId: active.id.toString(),
+          startPosition: active.data?.current?.sortable.index,
+          overPosition: over.data?.current?.sortable.index,
+          overStatus: over.data?.current?.sortable.containerId,
+          startStatus: active.data?.current?.sortable.containerId,
+        },
+        {
+          onSuccess: () => {
+            showNotification("success", "Move OK");
           },
-          {
-            onSuccess: () => {
-              showNotification("success", "Move OK");
-            },
-            onError: () => {
-              showNotification("warning", "Move failed");
-            },
-          }
-        );
-        // console.log("MOVING", activeId)
+          onError: () => {
+            showNotification("warning", "Move failed");
+          },
+        }
+      );
+      // console.log("MOVING", activeId)
     }
   };
 
@@ -151,12 +152,11 @@ const KanbanBoard = (props: BoardProps) => {
 
     const isActiveTask = active.data.current?.type === "Task";
     const isOverTask = over.data.current?.type === "Task";
-    
+
     if (!isActiveTask) return;
 
-    
     console.log("MOVING: Active:", active, "Over task", over);
-    
+
     // console.log(
     //   "DRAG_OVER: Active task ID:",
     //   active.data?.current?.sortable.index,
