@@ -107,13 +107,14 @@ const KanbanBoard = (props: BoardProps) => {
     const isActiveTask = active.data.current?.type === "Task";
     const isOverTask = over.data.current?.type === "Task";
 
-    // console.log("DRAG TASK: Active:", active, "Over task", over);
-    console.log(
-      "DRAG_OVER: Active task ID:",
-      active.data?.current?.sortable.index,
-      "Over ID:",
-      over.data?.current?.sortable.index
-    );
+    console.log("DROP: Active:", active, "Over task", over);
+
+    // console.log(
+    //   "DRAG_OVER: Active task ID:",
+    //   active.data?.current?.sortable.index,
+    //   "Over ID:",
+    //   over.data?.current?.sortable.index
+    // );
 
     if (!isActiveTask) return;
 
@@ -150,26 +151,18 @@ const KanbanBoard = (props: BoardProps) => {
 
     const isActiveTask = active.data.current?.type === "Task";
     const isOverTask = over.data.current?.type === "Task";
+    
+    if (!isActiveTask) return;
 
-    // // console.log("DRAG TASK: Active:", active, "Over task", over);
-    // // console.log(
-    // //   "DRAG_OVER: Active task ID:",
-    // //   active.data?.current?.sortable.index,
-    // //   "Over ID:",
-    // //   over.data?.current?.sortable.index
-    // // );
-
-    // if (!isActiveTask) return;
-
-    // Drop a task over another task
-    if (isActiveTask && isOverTask) {
-      // moveTask({
-      //   taskId: active.id.toString(),
-      //   startPosition: active.data?.current?.sortable.index,
-      //   overPosition: over.data?.current?.sortable.index,
-      //   status: over.data?.current?.sortable.containerId,
-      // });
-    }
+    
+    console.log("MOVING: Active:", active, "Over task", over);
+    
+    // console.log(
+    //   "DRAG_OVER: Active task ID:",
+    //   active.data?.current?.sortable.index,
+    //   "Over ID:",
+    //   over.data?.current?.sortable.index
+    // );
 
     // Drop a task over a column
     const isOverAColumn = over.data.current?.type === "Column";

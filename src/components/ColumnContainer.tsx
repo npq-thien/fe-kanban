@@ -31,23 +31,17 @@ type Props = {
 };
 
 const ColumnContainer = (props: Props) => {
-  const {
-    isPublic,
-    column,
-    tasks,
-    selectTask,
-    openAddTask,
-    taskActivities,
-  } = props;
+  const { isPublic, column, tasks, selectTask, openAddTask, taskActivities } =
+    props;
 
   const role = useSelector((state: RootState) => state.auth.role);
 
   // console.log('in column', tasks)
 
   const [isEditTitle, setIsEditTitle] = useState(false);
-  
+
   const sortedTasks = useMemo(() => {
-    return tasks.slice().sort((a, b) => a.position - b.position); 
+    return tasks.slice().sort((a, b) => a.position - b.position);
   }, [tasks]);
   // Create an array of task IDs in the sorted order
   const taskIds = useMemo(() => {
@@ -116,29 +110,13 @@ const ColumnContainer = (props: Props) => {
           </MenuItem>
         </div>
       </Menu>
-      <header
-        className="sticky top-0 flex-between gap-2 font-bold"
-      >
+      <header className="sticky top-0 flex-between gap-2 font-bold">
         <div
           className="flex gap-2 items-center"
           onClick={() => setIsEditTitle(true)}
         >
-          {!isEditTitle ? (
-            <>
-              {column.title}
-              <p className="rounded-full bg-light-1 px-2">{tasks.length}</p>
-            </>
-          ) : (
-            <input
-              className="rounded-md max-w-48 p-1 focus:border-blue-500 outline-none border"
-              autoFocus
-              value={column.title}
-              onBlur={() => setIsEditTitle(false)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") setIsEditTitle(false);
-              }}
-            />
-          )}
+          {column.title}
+          <p className="rounded-full bg-light-1 px-2">{tasks.length}</p>
         </div>
         <button
           className="p-1 rounded-md hover:bg-light-3"
@@ -151,7 +129,7 @@ const ColumnContainer = (props: Props) => {
         </button>
       </header>
       <div className="flex flex-col gap-2 overflow-auto">
-        <SortableContext items={taskIds}  id={column.status} >
+        <SortableContext items={taskIds} id={column.status}>
           {sortedTasks.map((task) => (
             <TaskCard
               key={task.id}
@@ -164,7 +142,7 @@ const ColumnContainer = (props: Props) => {
       </div>
 
       {/* Only admin and board isPublic show button to add public task */}
-      {column.title === "Open🔘" && (role === "ADMIN" || !isPublic ) && (
+      {column.title === "Open🔘" && (role === "ADMIN" || !isPublic) && (
         <button
           className="flex-center py-1 gap-2 btn-primary w-full"
           onClick={openAddTask}

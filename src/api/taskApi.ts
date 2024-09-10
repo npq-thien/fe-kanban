@@ -126,7 +126,6 @@ export const useMoveTask = () => {
 
   return useMutation({
     mutationFn: async (request: MoveTaskInput) => {
-      console.log('call something', request)
       const response = await api.put(`${BASE_URL}/api/task/move`, request);
       return response.data;
     },
