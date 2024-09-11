@@ -34,12 +34,14 @@ const EditTaskModal = (props: Props) => {
     reset,
     formState: { errors },
   } = useForm<UpdateTaskInput>();
+
   const { open, task, handleClose } = props;
   const currentUser = useSelector((state: RootState) => state.auth);
 
   const [taskDescription, setTaskDescription] = useState(
     task.description || ""
   );
+
   const [isEditingDescription, setIsEditingDescription] = useState(false);
 
   const { mutate: updateTask } = useUpdateTask();
@@ -53,6 +55,7 @@ const EditTaskModal = (props: Props) => {
     if (task) {
       setValue("name", task.name);
       setValue("description", task.description);
+      setTaskDescription(task.description);
       setValue(
         "dateTimeFinish",
         new Date(task.dateTimeFinish).toISOString().split("T")[0]
@@ -78,6 +81,15 @@ const EditTaskModal = (props: Props) => {
         onSuccess: () => {
           handleClose();
           reset();
+          setTaskDescription("");
+        },
+        onError: () => {
+          showNotification(
+            "warning",
+            "Only creator and assignee can edit the task."
+          );
+          reset();
+          setTaskDescription("");
         },
       }
     );

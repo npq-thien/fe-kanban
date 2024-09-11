@@ -1,17 +1,9 @@
 import { CSS } from "@dnd-kit/utilities";
 import { useMemo, useState } from "react";
 import { FaPlus } from "react-icons/fa";
-import { BsThreeDots } from "react-icons/bs";
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 
 import { Column, Id, Task, TaskActivity } from "../constants/types";
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@mui/material";
 import TaskCard from "./TaskCard";
 import { useSelector } from "react-redux";
 import { RootState } from "src/store";
@@ -34,8 +26,7 @@ const ColumnContainer = (props: Props) => {
 
   const role = useSelector((state: RootState) => state.auth.role);
 
-  // console.log('in column', tasks)
-
+  
   const sortedTasks = useMemo(() => {
     return tasks.slice().sort((a, b) => a.position - b.position);
   }, [tasks]);
@@ -43,10 +34,11 @@ const ColumnContainer = (props: Props) => {
   const taskIds = useMemo(() => {
     return sortedTasks.map((task) => task.id);
   }, [sortedTasks]);
-
+  
+  // console.log('in column', tasks)
   // console.log('sorted tasks', sortedTasks)
   // console.log('sorted ids', taskIds)
-  const [openDeleteColumn, setOpenDeleteColumn] = useState(false);
+
   const { setNodeRef, transform, transition } = useSortable({
     id: column.id,
     data: {
@@ -65,7 +57,7 @@ const ColumnContainer = (props: Props) => {
       ref={setNodeRef}
       style={style}
       // className="w-[280px] max-h-[500px] overflow-y-auto flex flex-col gap-4 bg-gradient-to-b from-cream-4 to-[rgba(255,255,255,0.1)] rounded-lg p-2"
-      className="w-[280px] max-h-[500px] overflow-y-auto flex flex-col gap-4 bg-cream-3 rounded-xl px-2 pb-2"
+      className="w-[280px] max-h-[500px] overflow-y-auto flex flex-col gap-4 bg-cream-3 rounded-xl px-2 pb-4"
       id={column.id.toString()}
     >
       <header className="sticky top-0 flex-between gap-2 font-bold py-2 bg-cream-3">

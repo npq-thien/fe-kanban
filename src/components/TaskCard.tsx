@@ -55,8 +55,6 @@ const TaskCard = (props: Props) => {
     transform: CSS.Translate.toString(transform),
   };
 
-  console.log("task here", task.assignedUserDisplayName);
-
   if (isDragging) {
     return (
       <div

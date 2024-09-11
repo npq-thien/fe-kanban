@@ -8,9 +8,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useGetUserTasks } from "src/api/taskApi";
 import KanbanBoard from "src/components/KanbanBoard";
 import { Task } from "src/constants/types";
+import { useDebounce } from "src/hooks/useDebounce";
 import { setRole, setUserId } from "src/store/authSlice";
 import { decodeToken } from "src/utils/helper";
-
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ const HomePage = () => {
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
   const openProfileMenu = Boolean(anchorProfile);
 
-
+  const debouncedSearchTaskValue = useDebounce(searchTaskValue, 800);
 
   // Check is token valid, if
   useEffect(() => {
@@ -53,17 +53,17 @@ const HomePage = () => {
   // Search task
   useEffect(() => {
     if (data && data.data.tasks) {
-      if (searchTaskValue) {
+      if (debouncedSearchTaskValue) {
         setFilteredTasks(
           data.data.tasks.filter((task: Task) =>
-            task.name.toLowerCase().includes(searchTaskValue.toLowerCase())
+            task.name.toLowerCase().includes(debouncedSearchTaskValue.toLowerCase())
           )
         );
       } else {
         setFilteredTasks(data.data.tasks);
       }
     }
-  }, [data, searchTaskValue]);
+  }, [data, debouncedSearchTaskValue]);
 
   if (isLoading) {
     return (
