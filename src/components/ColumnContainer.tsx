@@ -11,8 +11,6 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Menu,
-  MenuItem,
 } from "@mui/material";
 import TaskCard from "./TaskCard";
 import { useSelector } from "react-redux";
@@ -48,9 +46,6 @@ const ColumnContainer = (props: Props) => {
 
   // console.log('sorted tasks', sortedTasks)
   // console.log('sorted ids', taskIds)
-
-  const [openMenu, setOpenMenu] = useState(false);
-  const [anchorMenu, setAnchorMenu] = useState<null | HTMLElement>(null);
   const [openDeleteColumn, setOpenDeleteColumn] = useState(false);
   const { setNodeRef, transform, transition } = useSortable({
     id: column.id,
@@ -65,40 +60,22 @@ const ColumnContainer = (props: Props) => {
     transform: CSS.Transform.toString(transform),
   };
 
-  const handleCloseMenu = () => {
-    setOpenMenu(false);
-  };
-
-  // Confirm delete
-  const handleOpenDeleteColumn = () => {
-    setOpenDeleteColumn(true);
-  };
-
-  const handleCloseDeleteColumn = () => {
-    setOpenDeleteColumn(false);
-    setOpenMenu(false);
-  };
-
-  const handleConfirmDeleteColumn = () => {
-    setOpenDeleteColumn(false);
-    setOpenMenu(false);
-  };
-
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className="w-[250px] h-[500px] overflow-y-auto flex flex-col gap-4 bg-gradient-to-b from-cream-4 to-[rgba(255,255,255,0.1)] rounded-lg p-2"
+      // className="w-[280px] max-h-[500px] overflow-y-auto flex flex-col gap-4 bg-gradient-to-b from-cream-4 to-[rgba(255,255,255,0.1)] rounded-lg p-2"
+      className="w-[280px] max-h-[500px] overflow-y-auto flex flex-col gap-4 bg-cream-3 rounded-xl px-2 pb-2"
       id={column.id.toString()}
     >
-      <header className="sticky top-0 flex-between gap-2 font-bold">
-        <div className="flex gap-2 items-center">
+      <header className="sticky top-0 flex-between gap-2 font-bold py-2 bg-cream-3">
+        <div className="flex gap-2 items-center ml-2">
           {column.title}
           <p className="rounded-full bg-light-1 px-2">{tasks.length}</p>
         </div>
       </header>
-      <div className="flex flex-col gap-2 overflow-auto">
-        <SortableContext items={taskIds} id={column.status}>
+      <SortableContext items={taskIds} id={column.status}>
+        <div className="flex flex-col gap-2">
           {sortedTasks.map((task) => (
             <TaskCard
               key={task.id}
@@ -107,8 +84,8 @@ const ColumnContainer = (props: Props) => {
               taskActivities={taskActivities}
             />
           ))}
-        </SortableContext>
-      </div>
+        </div>
+      </SortableContext>
 
       {/* Only admin and board isPublic show button to add public task */}
       {column.title === "Open 🔘" && (role === "ADMIN" || !isPublic) && (
@@ -120,31 +97,6 @@ const ColumnContainer = (props: Props) => {
           Add a task
         </button>
       )}
-
-      {/* Dialog confirm */}
-      <Dialog open={openDeleteColumn}>
-        <DialogTitle>Confirm deletion</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete column{" "}
-            <span className="text-red-500">{column.title}</span>?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <button
-            className="btn-secondary border-gray-500"
-            onClick={handleCloseDeleteColumn}
-          >
-            Cancel
-          </button>
-          <button
-            className="btn-primary bg-red-500"
-            onClick={handleConfirmDeleteColumn}
-          >
-            Agree
-          </button>
-        </DialogActions>
-      </Dialog>
     </div>
   );
 };

@@ -52,8 +52,10 @@ const TaskCard = (props: Props) => {
 
   const style = {
     transition,
-    transform: CSS.Transform.toString(transform),
+    transform: CSS.Translate.toString(transform),
   };
+
+  console.log("task here", task.assignedUserDisplayName);
 
   if (isDragging) {
     return (
@@ -63,9 +65,9 @@ const TaskCard = (props: Props) => {
         {...attributes}
         {...listeners}
         key={task.id}
-        className="relative overflow-y-auto p-2 rounded-xl bg-white break-words opacity-25 overflow-hidden border-2 border-blue-400"
+        className="overflow-y-auto p-2 rounded-xl bg-white break-words opacity-25 border-2 border-blue-400 flex-col justify-center"
       >
-        {task.name}
+        <p className="line-clamp-2">{task.name}</p>
         <div className="flex items-center gap-2 mt-2">
           <p className="flex-center gap-2 p-1 bg-yellow-300 rounded-md">
             <FaRegClock />
@@ -97,7 +99,7 @@ const TaskCard = (props: Props) => {
         {...attributes}
         {...listeners}
         key={task.id}
-        className="relative overflow-y-auto p-2 rounded-xl bg-white break-words border-2 hover:border-blue-400 overflow-hidden group cursor-grab"
+        className="overflow-y-auto p-2 rounded-xl bg-white break-words border-2 hover:border-blue-400 group cursor-grab"
         onClick={() => selectTask(task)}
       >
         {/* <button
@@ -107,10 +109,10 @@ const TaskCard = (props: Props) => {
         >
           <MdDeleteForever />
         </button> */}
-        <p>{task.name}</p>
+        <p className="line-clamp-2">{task.name}</p>
 
         <div className="flex items-center gap-2 mt-2">
-          <p className="flex-center gap-2 p-1 bg-yellow-300 rounded-md">
+          <p className="flex-center gap-2 py-0.5 px-1.5 bg-yellow-300 rounded-md">
             <FaRegClock />
             {formatDueDate(task.dateTimeFinish.toString())}
           </p>

@@ -4,29 +4,34 @@ import { BsKanbanFill } from "react-icons/bs";
 import { FaSearch } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { useGetUserTasks, useSearchTask } from "src/api/taskApi";
+
+import { useGetUserTasks } from "src/api/taskApi";
 import KanbanBoard from "src/components/KanbanBoard";
 import { Task } from "src/constants/types";
 import { setRole, setUserId } from "src/store/authSlice";
 import { decodeToken } from "src/utils/helper";
+
 
 const HomePage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [user, setUser] = useState<any>(null);
   const [anchorProfile, setAnchorProfile] = useState<null | HTMLElement>(null);
-  const [searchTaskValue, setSearchTaskValue] = useState("");
+  const [searchTaskValue, setSearchTaskValue] = useState<string>("");
+  const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
   const openProfileMenu = Boolean(anchorProfile);
-  
+
+
+
   // Check is token valid, if
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
-    
+
     if (storedToken) {
       const userInfo = decodeToken(storedToken);
       setUser(userInfo);
       console.log("user info", userInfo);
-      
+
       // Set role and userId using Redux
       dispatch(setRole(userInfo.role));
       dispatch(setUserId(userInfo.sub));
@@ -42,7 +47,24 @@ const HomePage = () => {
   }, [navigate, dispatch]);
 
   const { data, isLoading } = useGetUserTasks(user?.sub || "");
-  // if (data) console.log("data in home changed", data.data.tasks);
+
+  // if (data) console.log("data in home changed", data);
+
+  // Search task
+  useEffect(() => {
+    if (data && data.data.tasks) {
+      if (searchTaskValue) {
+        setFilteredTasks(
+          data.data.tasks.filter((task: Task) =>
+            task.name.toLowerCase().includes(searchTaskValue.toLowerCase())
+          )
+        );
+      } else {
+        setFilteredTasks(data.data.tasks);
+      }
+    }
+  }, [data, searchTaskValue]);
+
   if (isLoading) {
     return (
       <div>
@@ -58,7 +80,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="overflow-x-auto min-h-[200vh] w-full bg-gradient-to-r from-[#FEC362] via-[#ECE854] to-[#5B9DFF]">
+    <div className="overflow-x-auto min-h-[150vh] w-full bg-gradient-to-r from-[#FEC362] via-[#ECE854] to-[#5B9DFF]">
       <nav className="fixed top-0 w-full bg-gray-200 p-4 flex items-center justify-between gap-4 border-b-2 border-black z-10">
         <Menu
           open={openProfileMenu}
@@ -85,8 +107,8 @@ const HomePage = () => {
             <FaSearch className="w-5 h-5 absolute left-2" />
             <input
               type="text"
-              // value={searchTaskValue}
-              // onChange={handleSearchChange}
+              value={searchTaskValue}
+              onChange={(e) => setSearchTaskValue(e.target.value)}
               className="input-field pl-10"
               placeholder="Type here to search..."
             />
@@ -109,13 +131,13 @@ const HomePage = () => {
         )}
       </nav>
 
-      {data && (
+      {filteredTasks && (
         <>
           {/* Private task show the private (assigned) task and public task they take */}
-          <div className="h-[100vh] mt-20">
+          <div className="h-[80vh] mt-20">
             <KanbanBoard
               isPublic={false}
-              tasks={data.data.tasks.filter(
+              tasks={filteredTasks.filter(
                 (task: Task) => task.assignedUserId === user.sub
               )}
             />
@@ -123,10 +145,10 @@ const HomePage = () => {
 
           <div className="h-1 w-full px-8 bg-red-400"></div>
 
-          <div className="h-[100vh]">
+          <div className="h-[80vh]">
             <KanbanBoard
               isPublic={true}
-              tasks={data.data.tasks.filter((task: Task) => task.isPublic)}
+              tasks={filteredTasks.filter((task: Task) => task.isPublic)}
               name="Public tasks"
             />
           </div>
