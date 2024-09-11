@@ -46,8 +46,8 @@ const ColumnContainer = (props: Props) => {
     return sortedTasks.map((task) => task.id);
   }, [sortedTasks]);
 
-  console.log('sorted tasks', sortedTasks)
-  console.log('sorted ids', taskIds)
+  // console.log('sorted tasks', sortedTasks)
+  // console.log('sorted ids', taskIds)
 
   const [openMenu, setOpenMenu] = useState(false);
   const [anchorMenu, setAnchorMenu] = useState<null | HTMLElement>(null);
@@ -88,43 +88,14 @@ const ColumnContainer = (props: Props) => {
     <div
       ref={setNodeRef}
       style={style}
-      className="w-[250px] h-full flex flex-col gap-4 bg-gradient-to-b from-cream-4 to-[rgba(255,255,255,0.1)] rounded-lg p-2"
+      className="w-[250px] h-[500px] overflow-y-auto flex flex-col gap-4 bg-gradient-to-b from-cream-4 to-[rgba(255,255,255,0.1)] rounded-lg p-2"
       id={column.id.toString()}
     >
-      <Menu
-        open={openMenu}
-        onClose={handleCloseMenu}
-        anchorEl={anchorMenu}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-      >
-        <div className="border-b border-1 border-b-black mb-2">
-          <p className="text-center">Column actions</p>
-        </div>
-        <div>
-          <MenuItem>Copy column</MenuItem>
-          <MenuItem>Move all cards in this list</MenuItem>
-          <MenuItem onClick={handleOpenDeleteColumn}>
-            <p className="text-red-500 font-semibold">Delete column</p>
-          </MenuItem>
-        </div>
-      </Menu>
       <header className="sticky top-0 flex-between gap-2 font-bold">
         <div className="flex gap-2 items-center">
           {column.title}
           <p className="rounded-full bg-light-1 px-2">{tasks.length}</p>
         </div>
-        <button
-          className="p-1 rounded-md hover:bg-light-3"
-          onClick={(e) => {
-            setAnchorMenu(e.currentTarget);
-            setOpenMenu(true);
-          }}
-        >
-          <BsThreeDots />
-        </button>
       </header>
       <div className="flex flex-col gap-2 overflow-auto">
         <SortableContext items={taskIds} id={column.status}>
@@ -140,7 +111,7 @@ const ColumnContainer = (props: Props) => {
       </div>
 
       {/* Only admin and board isPublic show button to add public task */}
-      {column.title === "Open🔘" && (role === "ADMIN" || !isPublic) && (
+      {column.title === "Open 🔘" && (role === "ADMIN" || !isPublic) && (
         <button
           className="flex-center py-1 gap-2 btn-primary w-full"
           onClick={openAddTask}

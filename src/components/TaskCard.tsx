@@ -71,6 +71,13 @@ const TaskCard = (props: Props) => {
             <FaRegClock />
             {formatDueDate(task.dateTimeFinish.toString())}
           </p>
+          {task.isPublic &&
+            (task.assignedUserDisplayName ? (
+              <HiUserGroup className="text-orange-500" />
+            ) : (
+              <HiUserGroup className="text-gray-500" />
+            ))}
+
           {activityByTask.length > 0 && (
             <div className="flex items-center gap-1">
               <IoChatbubbleEllipsesOutline />
@@ -107,7 +114,13 @@ const TaskCard = (props: Props) => {
             <FaRegClock />
             {formatDueDate(task.dateTimeFinish.toString())}
           </p>
-          {task.isPublic && <HiUserGroup className="text-orange-500" />}
+          {task.isPublic &&
+            (task.assignedUserDisplayName ? (
+              <HiUserGroup className="text-orange-500" />
+            ) : (
+              <HiUserGroup className="text-gray-500" />
+            ))}
+
           {activityByTask.length > 0 && (
             <div className="flex items-center gap-1">
               <IoChatbubbleEllipsesOutline />

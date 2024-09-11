@@ -4,7 +4,7 @@ import { BsKanbanFill } from "react-icons/bs";
 import { FaSearch } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { useGetUserTasks } from "src/api/taskApi";
+import { useGetUserTasks, useSearchTask } from "src/api/taskApi";
 import KanbanBoard from "src/components/KanbanBoard";
 import { Task } from "src/constants/types";
 import { setRole, setUserId } from "src/store/authSlice";
@@ -15,16 +15,18 @@ const HomePage = () => {
   const dispatch = useDispatch();
   const [user, setUser] = useState<any>(null);
   const [anchorProfile, setAnchorProfile] = useState<null | HTMLElement>(null);
+  const [searchTaskValue, setSearchTaskValue] = useState("");
   const openProfileMenu = Boolean(anchorProfile);
-
+  
+  // Check is token valid, if
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
-
+    
     if (storedToken) {
       const userInfo = decodeToken(storedToken);
       setUser(userInfo);
       console.log("user info", userInfo);
-
+      
       // Set role and userId using Redux
       dispatch(setRole(userInfo.role));
       dispatch(setUserId(userInfo.sub));
@@ -40,9 +42,7 @@ const HomePage = () => {
   }, [navigate, dispatch]);
 
   const { data, isLoading } = useGetUserTasks(user?.sub || "");
-
   // if (data) console.log("data in home changed", data.data.tasks);
-
   if (isLoading) {
     return (
       <div>
@@ -85,6 +85,8 @@ const HomePage = () => {
             <FaSearch className="w-5 h-5 absolute left-2" />
             <input
               type="text"
+              // value={searchTaskValue}
+              // onChange={handleSearchChange}
               className="input-field pl-10"
               placeholder="Type here to search..."
             />

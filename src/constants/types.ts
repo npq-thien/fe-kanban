@@ -30,6 +30,12 @@ export type UserInfo = {
 // };
 
 // Task
+export type SearchTaskInput = {
+  userId: string;
+  creatorDisplayName: string;
+  taskName: string;
+};
+
 export type CreateTaskInput = {
   name: string;
   status: string;

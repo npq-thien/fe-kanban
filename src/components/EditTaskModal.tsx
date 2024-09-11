@@ -163,11 +163,14 @@ const EditTaskModal = (props: Props) => {
                 <FaList />
                 From
               </h3>
-              <select className="p-1 px-6 rounded-md" {...register("status")}>
-                <option value={"TO_DO"}>Open</option>
-                <option value={"IN_PROGRESS"}>In progress</option>
-                <option value={"DONE"}>Done</option>
-                <option value={"CANCEL"}>Cancel</option>
+              <select
+                className="p-1 px-6 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
+                {...register("status")}
+              >
+                <option value={"TO_DO"}>🔘 Open</option>
+                <option value={"IN_PROGRESS"}>⏳ In progress</option>
+                <option value={"DONE"}>✅ Done</option>
+                <option value={"CANCEL"}>🚫 Cancel</option>
               </select>
             </div>
 

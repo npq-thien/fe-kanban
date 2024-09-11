@@ -4,8 +4,10 @@ import { QUERY_KEYS } from "./queryKey";
 import {
   CreateTaskInput,
   MoveTaskInput,
+  SearchTaskInput,
   UpdateTaskInput,
 } from "src/constants/types";
+import { AxiosRequestConfig } from "axios";
 
 export const useGetAllTasks = () => {
   const fetchData = async () => {
@@ -41,6 +43,30 @@ export const useGetUserTasks = (userId: string) => {
     onError: (error) => console.log("Get user tasks failed: ", error),
     refetchOnWindowFocus: false,
     enabled: !!userId,
+  });
+};
+
+export const useSearchTask = (
+  searchTaskInput: AxiosRequestConfig<SearchTaskInput>
+) => {
+  const fetchData = async () => {
+    try {
+      const response = await api.get(
+        `${BASE_URL}/api/task/search`,
+        searchTaskInput
+      );
+      return response.data;
+    } catch (error) {
+      console.log("Search tasks failed: ", error);
+    }
+  };
+
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_SEARCHED_TASKS, searchTaskInput.params?.taskName],
+    queryFn: fetchData,
+    onError: (error) => console.log("Search tasks failed: ", error),
+    refetchOnWindowFocus: false,
+    enabled: !!searchTaskInput.params?.taskName,
   });
 };
 

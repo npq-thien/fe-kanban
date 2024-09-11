@@ -109,13 +109,6 @@ const KanbanBoard = (props: BoardProps) => {
 
     console.log("DROP: Active:", active, "Over task", over);
 
-    // console.log(
-    //   "DRAG_OVER: Active task ID:",
-    //   active.data?.current?.sortable.index,
-    //   "Over ID:",
-    //   over.data?.current?.sortable.index
-    // );
-
     if (!isActiveTask) return;
 
     // Drop a task over another task
@@ -129,15 +122,11 @@ const KanbanBoard = (props: BoardProps) => {
           startStatus: active.data?.current?.sortable.containerId,
         },
         {
-          onSuccess: () => {
-            showNotification("success", "Move OK");
-          },
           onError: () => {
             showNotification("warning", "Move failed");
           },
         }
       );
-      // console.log("MOVING", activeId)
     }
   };
 
@@ -155,7 +144,7 @@ const KanbanBoard = (props: BoardProps) => {
 
     if (!isActiveTask) return;
 
-    console.log("MOVING: Active:", active, "Over task", over);
+    console.log("MOVING: Active:", active, "Over column", over);
 
     // console.log(
     //   "DRAG_OVER: Active task ID:",
@@ -167,33 +156,48 @@ const KanbanBoard = (props: BoardProps) => {
     // Drop a task over a column
     const isOverAColumn = over.data.current?.type === "Column";
     if (isActiveTask && isOverAColumn) {
-      // console.log("move to column");
+      console.log("move to column");
       const task = taskData.find((task) => task.id === activeId);
       const column = columns.find((col) => col.id === overId);
 
-      // console.log("DRAG_END: Active task ID:", activeId, "Over ID:", overId);
+      // console.log("DRAG OVER: Active task ID:", activeId, "Over ID:", overId);
 
       if (task && column) {
-        const updatedTask = {
-          ...task,
-          status: column.status, // Update task status to match the column status
-        };
+        // console.log("AHIHI", column.status);
+        let overPostion = over.data?.current?.sortable.index;
+        if (overPostion === -1) {
+          overPostion = 0;
+        }
 
-        // Call the API to update the task
-        updateTask({
-          taskId: activeId.toString(),
-          updatedTask: {
-            name: updatedTask.name,
-            status: updatedTask.status,
-            dateTimeFinish: updatedTask.dateTimeFinish.toString(),
-            isPublic: updatedTask.isPublic,
-            description: updatedTask.description,
-            assignedUserId: "",
-          },
+        moveTask({
+          taskId: active.id.toString(),
+          startPosition: active.data?.current?.sortable.index,
+          overPosition: overPostion,
+          overStatus: column.status,
+          startStatus: active.data?.current?.sortable.containerId,
         });
-
-        console.log("Task moved to column:", column.title);
       }
+
+      // if (task && column) {
+      //   const updatedTask = {
+      //     ...task,
+      //     status: column.status,
+      //   };
+
+      //   // Call the API to update the task
+      //   updateTask({
+      //     taskId: activeId.toString(),
+      //     updatedTask: {
+      //       name: updatedTask.name,
+      //       status: updatedTask.status,
+      //       dateTimeFinish: updatedTask.dateTimeFinish.toString(),
+      //       isPublic: updatedTask.isPublic,
+      //       description: updatedTask.description,
+      //       assignedUserId: "",
+      //     },
+      //   });
+      // }
+      // console.log("Task moved to column:", column.title);
     }
   };
   // ---------------------------------------------------------------------------
