@@ -17,7 +17,6 @@ import { useCreateTask } from "src/api/taskApi";
 import { useSelector } from "react-redux";
 import { RootState } from "src/store";
 
-
 type Props = {
   open: boolean;
   handleClose: () => void;
@@ -44,7 +43,6 @@ const AddTaskModal = (props: Props) => {
   // dispatch redux
   const role = useSelector((state: RootState) => state.auth.role);
 
-
   const { mutate: createTask } = useCreateTask(); // Hook is called outside onSubmit
 
   const handleDescriptionChange = (content: string) => {
@@ -70,7 +68,6 @@ const AddTaskModal = (props: Props) => {
     handleClose();
     reset();
   };
-
 
   return (
     <Dialog
@@ -123,10 +120,10 @@ const AddTaskModal = (props: Props) => {
                 From
               </h3>
               <select className="p-1 px-6 rounded-md" {...register("status")}>
-                <option value={"TO_DO"}>Open</option>
-                <option value={"IN_PROGRESS"}>In progress</option>
-                <option value={"DONE"}>Done</option>
-                <option value={"CANCEL"}>Cancel</option>
+                <option value={"TO_DO"}>🔘 Open</option>
+                <option value={"IN_PROGRESS"}>⏳ In progress</option>
+                <option value={"DONE"}>✅ Done</option>
+                <option value={"CANCEL"}>🚫 Cancel</option>
               </select>
             </div>
 

@@ -40,7 +40,6 @@ const KanbanBoard = (props: BoardProps) => {
   const [openAddTask, setOpenAddTask] = useState(false);
   const [openEditTask, setOpenEditTask] = useState(false);
 
-  const { mutate: updateTask } = useUpdateTask();
   const { mutate: moveTask } = useMoveTask();
 
   const sensors = useSensors(
@@ -177,27 +176,6 @@ const KanbanBoard = (props: BoardProps) => {
           startStatus: active.data?.current?.sortable.containerId,
         });
       }
-
-      // if (task && column) {
-      //   const updatedTask = {
-      //     ...task,
-      //     status: column.status,
-      //   };
-
-      //   // Call the API to update the task
-      //   updateTask({
-      //     taskId: activeId.toString(),
-      //     updatedTask: {
-      //       name: updatedTask.name,
-      //       status: updatedTask.status,
-      //       dateTimeFinish: updatedTask.dateTimeFinish.toString(),
-      //       isPublic: updatedTask.isPublic,
-      //       description: updatedTask.description,
-      //       assignedUserId: "",
-      //     },
-      //   });
-      // }
-      // console.log("Task moved to column:", column.title);
     }
   };
   // ---------------------------------------------------------------------------

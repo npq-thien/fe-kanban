@@ -42,18 +42,13 @@ const ColumnContainer = (props: Props) => {
   // console.log('sorted tasks', sortedTasks)
   // console.log('sorted ids', taskIds)
 
-  const { setNodeRef, transform, transition } = useSortable({
+  const { setNodeRef } = useSortable({
     id: column.id,
     data: {
       type: "Column",
       column,
     },
   });
-
-  const style = {
-    transition,
-    transform: CSS.Transform.toString(transform),
-  };
 
   return (
     <div
@@ -63,7 +58,7 @@ const ColumnContainer = (props: Props) => {
       className="w-[280px] max-h-[500px] overflow-y-auto flex flex-col gap-4 bg-cream-3 rounded-xl px-2 pb-4"
       id={column.id.toString()}
     >
-      <header className="sticky top-0 flex-between gap-2 font-bold pt-2 mb-2 bg-cream-3">
+      <header className="sticky top-0 flex-between gap-2 font-bold pt-2 mb-2 bg-cream-3 z-20">
         <div className="flex gap-2 items-center ml-2">
           {column.title}
           <p className="rounded-full bg-light-1 px-2">{tasks.length}</p>

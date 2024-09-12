@@ -81,7 +81,7 @@ const HomePage = () => {
 
   return (
     <div className="overflow-x-auto min-h-[150vh] w-full bg-gradient-to-r from-[#FEC362] via-[#ECE854] to-[#5B9DFF]">
-      <nav className="fixed top-0 w-full bg-gray-200 p-4 flex items-center justify-between gap-4 border-b-2 border-black z-10">
+      <nav className="fixed top-0 w-full bg-gray-200 p-4 flex items-center justify-between gap-4 border-b-2 border-black z-30">
         <Menu
           open={openProfileMenu}
           anchorEl={anchorProfile}
