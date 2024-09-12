@@ -275,7 +275,7 @@ const EditTaskModal = (props: Props) => {
 
               {task.description && !isEditingDescription ? (
                 <div
-                  className="p-1 px-2 bg-white rounded-md"
+                  className="p-1 px-2 bg-white rounded-md formatted-css"
                   dangerouslySetInnerHTML={{ __html: task.description }}
                   onClick={() => setIsEditingDescription(true)}
                 ></div>
