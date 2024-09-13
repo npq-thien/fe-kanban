@@ -7,6 +7,7 @@ import { Id, Task, TaskActivity } from "../constants/types";
 import { formatDueDate } from "src/utils/helper";
 import { FaRegClock } from "react-icons/fa";
 import { HiUserGroup } from "react-icons/hi";
+import { BsTextParagraph } from "react-icons/bs";
 
 type Props = {
   task: Task;
@@ -55,6 +56,20 @@ const TaskCard = (props: Props) => {
     transform: CSS.Translate.toString(transform),
   };
 
+  const dateTimeColor = () => {
+    if (task.status === "DONE") {
+      return "bg-green-400";
+    } else if (task.status === "CANCEL") {
+      return "bg-gray-300";
+    } else if (new Date(task.dateTimeFinish) < new Date()) {
+      return "bg-red-300";
+    } else {
+      return "bg-yellow-300";
+    }
+  };
+
+  console.log("task color", task.status);
+
   if (isDragging) {
     return (
       <div
@@ -67,7 +82,7 @@ const TaskCard = (props: Props) => {
       >
         <p className="line-clamp-2">{task.name}</p>
         <div className="flex items-center gap-2 mt-2">
-          <p className="flex-center gap-2 p-1 bg-yellow-300 rounded-md">
+          <p className={`flex-center gap-2 p-1 rounded-md ${dateTimeColor()}`}>
             <FaRegClock />
             {formatDueDate(task.dateTimeFinish.toString())}
           </p>
@@ -110,7 +125,9 @@ const TaskCard = (props: Props) => {
         <p className="line-clamp-2">{task.name}</p>
 
         <div className="flex items-center gap-2 mt-2">
-          <p className="flex-center gap-2 py-0.5 px-1.5 bg-yellow-300 rounded-md">
+          <p
+            className={`flex-center gap-2 py-0.5 px-1.5 rounded-md ${dateTimeColor()}`}
+          >
             <FaRegClock />
             {formatDueDate(task.dateTimeFinish.toString())}
           </p>
@@ -121,12 +138,14 @@ const TaskCard = (props: Props) => {
               <HiUserGroup className="text-gray-500" />
             ))}
 
-          {activityByTask.length > 0 && (
+          {task.description && <BsTextParagraph />}
+
+          {/* {activityByTask.length > 0 && (
             <div className="flex items-center gap-1">
               <IoChatbubbleEllipsesOutline />
               <p className="text-tiny">{activityByTask.length}</p>
             </div>
-          )}
+          )} */}
         </div>
       </div>
 

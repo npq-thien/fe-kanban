@@ -82,7 +82,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="overflow-x-auto min-h-[120vh] w-full bg-gradient-to-r from-[#FEC362] via-[#ECE854] to-[#5B9DFF]">
+    <div className="overflow-x-auto min-h-[140vh] w-full bg-gradient-to-r from-[#FEC362] via-[#ECE854] to-[#5B9DFF]">
       <nav className="fixed top-0 w-full bg-gray-200 p-4 flex items-center justify-between gap-4 border-b-2 border-black z-30">
         <Menu
           open={openProfileMenu}
@@ -147,7 +147,7 @@ const HomePage = () => {
 
           <div className="h-1 w-full px-8 bg-red-400"></div>
 
-          <div className="h-[50vh]">
+          <div className="h-[60vh]">
             <KanbanBoard
               isPublic={true}
               tasks={filteredTasks.filter((task: Task) => task.isPublic)}

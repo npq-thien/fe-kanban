@@ -95,7 +95,10 @@ const AddTaskModal = (props: Props) => {
             <div className="flex items-center gap-4">
               <h3 className="flex items-center text-lg font-semibold gap-4 mr-[6%]">
                 <MdOutlineSubtitles />
-                Title
+                <div className="flex gap-1">
+                  Title
+                  <p className="text-red-500">*</p>
+                </div>
               </h3>
               <input
                 autoFocus
@@ -117,7 +120,10 @@ const AddTaskModal = (props: Props) => {
             <div className="flex items-center gap-4">
               <h3 className="flex items-center text-lg font-semibold gap-4 mr-[6%]">
                 <FaList />
-                From
+                <div className="flex gap-1">
+                  From
+                  <p className="text-red-500">*</p>
+                </div>
               </h3>
               <select className="p-1 px-6 rounded-md" {...register("status")}>
                 <option value={"TO_DO"}>🔘 Open</option>
@@ -132,7 +138,10 @@ const AddTaskModal = (props: Props) => {
               <div className="flex items-center gap-4">
                 <h3 className="flex items-center text-lg font-semibold gap-4">
                   <FaRegClock />
-                  Due date
+                  <div className="flex gap-1">
+                    Due date
+                    <p className="text-red-500">*</p>
+                  </div>
                 </h3>
 
                 <input

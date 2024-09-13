@@ -152,7 +152,10 @@ const EditTaskModal = (props: Props) => {
             <div className="flex items-center gap-4">
               <h3 className="flex items-center text-lg font-semibold gap-4 mr-[6%]">
                 <MdOutlineSubtitles />
-                Title
+                <div className="flex gap-1">
+                  Title
+                  <p className="text-red-500">*</p>
+                </div>
               </h3>
               <input
                 className="font-semibold w-full ml-1 p-1 px-2 rounded-md"
@@ -173,7 +176,10 @@ const EditTaskModal = (props: Props) => {
             <div className="flex items-center gap-4">
               <h3 className="flex items-center text-lg font-semibold gap-4 mr-[6%]">
                 <FaList />
-                From
+                <div className="flex gap-1">
+                  From
+                  <p className="text-red-500">*</p>
+                </div>
               </h3>
               <select
                 className="p-1 px-6 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
@@ -191,7 +197,10 @@ const EditTaskModal = (props: Props) => {
               <div className="flex items-center gap-4">
                 <h3 className="flex items-center text-lg font-semibold gap-4">
                   <FaRegClock />
-                  Due date
+                  <div className="flex gap-1">
+                    Due date
+                    <p className="text-red-500">*</p>
+                  </div>
                 </h3>
 
                 <input
@@ -236,7 +245,7 @@ const EditTaskModal = (props: Props) => {
               </h3>
               {task.assignedUserId ? (
                 <>
-                  <div className="font-semibold bg-white p-1 px-2 rounded-md">
+                  <div className="font-semibold bg-white p-1 px-2 ml-4 rounded-md">
                     {task.assignedUserDisplayName}
                   </div>
                   {/* Only task's owner can drop the public task in TODO status */}
