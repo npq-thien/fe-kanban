@@ -2,10 +2,12 @@ import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
 import { useEffect, useState } from "react";
+import { IconButton } from "@mui/material";
+import Tooltip from "@mui/material/Tooltip";
 
 import { Id, Task, TaskActivity } from "../constants/types";
 import { formatDueDate } from "src/utils/helper";
-import { FaRegClock } from "react-icons/fa";
+import { FaRegClock, FaUserCircle } from "react-icons/fa";
 import { HiUserGroup } from "react-icons/hi";
 import { BsTextParagraph } from "react-icons/bs";
 
@@ -21,7 +23,6 @@ const TaskCard = (props: Props) => {
   const { task, selectTask, taskActivities } = props;
   // const [openDeleteTask, setOpenDeleteTask] = useState(false);
   const [activityByTask, setActivityByTask] = useState<TaskActivity[]>([]);
-
   // console.log('in task', task)
 
   useEffect(() => {
@@ -68,7 +69,7 @@ const TaskCard = (props: Props) => {
     }
   };
 
-  console.log("task color", task.status);
+  console.log("task here", task);
 
   if (isDragging) {
     return (
@@ -124,21 +125,30 @@ const TaskCard = (props: Props) => {
         </button> */}
         <p className="line-clamp-2">{task.name}</p>
 
-        <div className="flex items-center gap-2 mt-2">
-          <p
-            className={`flex-center gap-2 py-0.5 px-1.5 rounded-md ${dateTimeColor()}`}
-          >
-            <FaRegClock />
-            {formatDueDate(task.dateTimeFinish.toString())}
-          </p>
-          {task.isPublic &&
-            (task.assignedUserDisplayName ? (
-              <HiUserGroup className="text-orange-500" />
-            ) : (
-              <HiUserGroup className="text-gray-500" />
-            ))}
+        <div className="flex-between">
+          <div className="flex items-center gap-2 mt-2">
+            <p
+              className={`flex-center gap-2 py-0.5 px-1.5 rounded-md ${dateTimeColor()}`}
+            >
+              <FaRegClock />
+              {formatDueDate(task.dateTimeFinish.toString())}
+            </p>
+            {task.isPublic &&
+              (task.assignedUserDisplayName ? (
+                <HiUserGroup className="text-orange-500" />
+              ) : (
+                <HiUserGroup className="text-gray-500" />
+              ))}
+            {task.description && <BsTextParagraph />}
+          </div>
 
-          {task.description && <BsTextParagraph />}
+          {task.assignedUserDisplayName && (
+            <Tooltip title={task.assignedUserDisplayName} placement="top">
+              <IconButton>
+                <FaUserCircle className="text-orange-500 text-xl" />
+              </IconButton>
+            </Tooltip>
+          )}
 
           {/* {activityByTask.length > 0 && (
             <div className="flex items-center gap-1">
@@ -148,31 +158,6 @@ const TaskCard = (props: Props) => {
           )} */}
         </div>
       </div>
-
-      {/* modal delete task confirm */}
-      {/* <Dialog open={openDeleteTask} onClose={handleCloseDeleteTask}>
-        <DialogTitle>Confirm deletion</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete task{" "}
-            <span className="text-red-500">{task.name}</span>?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <button
-            className="btn-secondary border-gray-500"
-            onClick={handleCloseDeleteTask}
-          >
-            Cancel
-          </button>
-          <button
-            className="btn-primary bg-red-500"
-            onClick={handleConfirmDeleteTask}
-          >
-            Agree
-          </button>
-        </DialogActions>
-      </Dialog> */}
     </div>
   );
 };
