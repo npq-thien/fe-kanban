@@ -56,7 +56,9 @@ const HomePage = () => {
       if (debouncedSearchTaskValue) {
         setFilteredTasks(
           data.data.tasks.filter((task: Task) =>
-            task.name.toLowerCase().includes(debouncedSearchTaskValue.toLowerCase())
+            task.name
+              .toLowerCase()
+              .includes(debouncedSearchTaskValue.toLowerCase())
           )
         );
       } else {
@@ -80,7 +82,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="overflow-x-auto min-h-[150vh] w-full bg-gradient-to-r from-[#FEC362] via-[#ECE854] to-[#5B9DFF]">
+    <div className="overflow-x-auto min-h-[120vh] w-full bg-gradient-to-r from-[#FEC362] via-[#ECE854] to-[#5B9DFF]">
       <nav className="fixed top-0 w-full bg-gray-200 p-4 flex items-center justify-between gap-4 border-b-2 border-black z-30">
         <Menu
           open={openProfileMenu}
@@ -117,10 +119,10 @@ const HomePage = () => {
 
         {user ? (
           <div
-            className="hover:bg-dark-1 p-1 rounded-md cursor-pointer"
+            className="hover:bg-dark-1 p-1 rounded-md cursor-pointer mr-8"
             onClick={(e) => setAnchorProfile(e.currentTarget)}
           >
-            {user.displayName}
+            <p className="font-semibold text-lg">{user.displayName}</p>
           </div>
         ) : (
           <Link to={"/login"}>
@@ -134,7 +136,7 @@ const HomePage = () => {
       {filteredTasks && (
         <>
           {/* Private task show the private (assigned) task and public task they take */}
-          <div className="h-[80vh] mt-20">
+          <div className="h-[60vh] mt-20">
             <KanbanBoard
               isPublic={false}
               tasks={filteredTasks.filter(
@@ -145,7 +147,7 @@ const HomePage = () => {
 
           <div className="h-1 w-full px-8 bg-red-400"></div>
 
-          <div className="h-[80vh]">
+          <div className="h-[50vh]">
             <KanbanBoard
               isPublic={true}
               tasks={filteredTasks.filter((task: Task) => task.isPublic)}
