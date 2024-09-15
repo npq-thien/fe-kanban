@@ -20,14 +20,9 @@ ol {
 }
 
 ::-webkit-scrollbar-thumb {
-  /* background-image: linear-gradient(to bottom, #838282, #83c4c0); */
   background-image: linear-gradient(to bottom, #7a8516, #f5d468);
   border-radius: 10px;
   border: 3px solid #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: #555;
 }
 
 @layer utilities {

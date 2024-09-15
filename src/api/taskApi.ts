@@ -6,7 +6,6 @@ import {
   MoveTaskInput,
   UpdateTaskInput,
 } from "src/constants/types";
-import { displayName } from "react-quill";
 
 export const useGetAllTasks = () => {
   const fetchData = async () => {
@@ -44,7 +43,6 @@ export const useGetUserTasks = (userId: string) => {
     enabled: !!userId,
   });
 };
-
 
 export const useCreateTask = () => {
   const queryClient = useQueryClient();

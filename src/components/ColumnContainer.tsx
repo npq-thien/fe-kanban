@@ -30,17 +30,16 @@ const ColumnContainer = (props: Props) => {
 
   const role = useSelector((state: RootState) => state.auth.role);
 
+  // Create an array of task in the sorted by position
   const sortedTasks = useMemo(() => {
     return tasks.slice().sort((a, b) => a.position - b.position);
   }, [tasks]);
-  // Create an array of task IDs in the sorted order
+
   const taskIds = useMemo(() => {
     return sortedTasks.map((task) => task.id);
   }, [sortedTasks]);
 
   // console.log('in column', tasks)
-  // console.log('sorted tasks', sortedTasks)
-  // console.log('sorted ids', taskIds)
 
   const { setNodeRef } = useSortable({
     id: column.id,
@@ -53,7 +52,6 @@ const ColumnContainer = (props: Props) => {
   return (
     <div
       ref={setNodeRef}
-      // style={style}
       // className="w-[280px] max-h-[400px] overflow-y-auto flex flex-col gap-4 bg-gradient-to-b from-cream-4 to-[rgba(255,255,255,0.1)] rounded-lg p-2"
       className="w-[300px] max-h-[400px] overflow-y-auto flex flex-col gap-4 bg-cream-3 rounded-xl px-2 pb-4"
       id={column.id.toString()}
@@ -64,6 +62,7 @@ const ColumnContainer = (props: Props) => {
           <p className="rounded-full bg-light-1 px-2">{tasks.length}</p>
         </div>
       </header>
+
       <SortableContext
         items={taskIds}
         id={column.status}

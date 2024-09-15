@@ -20,22 +20,7 @@ type Props = {
 };
 
 const TaskCard = (props: Props) => {
-  const { task, selectTask, taskActivities } = props;
-  // const [openDeleteTask, setOpenDeleteTask] = useState(false);
-  const [activityByTask, setActivityByTask] = useState<TaskActivity[]>([]);
-  // console.log('in task', task)
-
-  useEffect(() => {
-    const filteredActivities = taskActivities?.filter(
-      (activity) => activity.taskId === task.id
-    );
-    setActivityByTask(filteredActivities || []);
-  }, [taskActivities, task.id]);
-
-  // const handleOpenDeleteTask = (event: any) => {
-  //   event.stopPropagation(); // Prevents the click event from the parent div (openEdit)
-  //   setOpenDeleteTask(true);
-  // };
+  const { task, selectTask } = props;
 
   const {
     setNodeRef,
@@ -69,8 +54,6 @@ const TaskCard = (props: Props) => {
     }
   };
 
-  console.log("task here", task);
-
   if (isDragging) {
     return (
       <div
@@ -93,13 +76,6 @@ const TaskCard = (props: Props) => {
             ) : (
               <HiUserGroup className="text-gray-500" />
             ))}
-
-          {activityByTask.length > 0 && (
-            <div className="flex items-center gap-1">
-              <IoChatbubbleEllipsesOutline />
-              <p className="text-tiny">{activityByTask.length}</p>
-            </div>
-          )}
         </div>
       </div>
     );
@@ -116,13 +92,6 @@ const TaskCard = (props: Props) => {
         className="overflow-y-auto p-2 rounded-xl bg-white break-words border-2 hover:border-blue-400 group cursor-grab"
         onClick={() => selectTask(task)}
       >
-        {/* <button
-          className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-light-2
-       hover:bg-light-3 p-1 rounded-full z-10 opacity-0 group-hover:opacity-100 transition-opacity"
-          onClick={handleOpenDeleteTask}
-        >
-          <MdDeleteForever />
-        </button> */}
         <p className="line-clamp-2">{task.name}</p>
 
         <div className="flex-between">
@@ -139,7 +108,10 @@ const TaskCard = (props: Props) => {
               ) : (
                 <HiUserGroup className="text-gray-500" />
               ))}
-            {task.description && <BsTextParagraph />}
+            {/* "<p><br></p>" is the default string will save into DB if nothing in the rich text provider */}
+            {task.description && task.description !== "<p><br></p>" && (
+              <BsTextParagraph />
+            )}
           </div>
 
           {task.assignedUserDisplayName && (
@@ -149,13 +121,6 @@ const TaskCard = (props: Props) => {
               </IconButton>
             </Tooltip>
           )}
-
-          {/* {activityByTask.length > 0 && (
-            <div className="flex items-center gap-1">
-              <IoChatbubbleEllipsesOutline />
-              <p className="text-tiny">{activityByTask.length}</p>
-            </div>
-          )} */}
         </div>
       </div>
     </div>

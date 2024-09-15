@@ -37,12 +37,12 @@ const EditTaskModal = (props: Props) => {
 
   const { open, task, handleClose } = props;
   const currentUser = useSelector((state: RootState) => state.auth);
+  const [isEditingDescription, setIsEditingDescription] = useState(false);
 
   const [taskDescription, setTaskDescription] = useState(
     task.description || ""
   );
 
-  const [isEditingDescription, setIsEditingDescription] = useState(false);
 
   const { mutate: updateTask } = useUpdateTask();
   const { mutate: takeTask } = useTakeTask();
@@ -71,7 +71,6 @@ const EditTaskModal = (props: Props) => {
   };
 
   const onSubmit: SubmitHandler<UpdateTaskInput> = (data) => {
-    // console.log("submit", data);
     // Convert the date to an ISO 8601 string if needed
     const date = new Date(data.dateTimeFinish);
     const isoDate = date.toISOString();

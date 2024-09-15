@@ -23,7 +23,9 @@ type Props = {
 };
 
 const AddTaskModal = (props: Props) => {
+  const role = useSelector((state: RootState) => state.auth.role);
   const { open, handleClose } = props;
+
   const {
     register,
     handleSubmit,
@@ -40,10 +42,8 @@ const AddTaskModal = (props: Props) => {
     },
   });
 
-  // dispatch redux
-  const role = useSelector((state: RootState) => state.auth.role);
 
-  const { mutate: createTask } = useCreateTask(); // Hook is called outside onSubmit
+  const { mutate: createTask } = useCreateTask();
 
   const handleDescriptionChange = (content: string) => {
     setValue("description", content); // Manually set value in the form

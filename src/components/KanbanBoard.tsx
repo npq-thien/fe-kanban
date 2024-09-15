@@ -20,7 +20,7 @@ import {
 import TaskCard from "./TaskCard";
 import AddTaskModal from "./AddTaskModal";
 import EditTaskModal from "./EditTaskModal";
-import { useMoveTask, useUpdateTask } from "src/api/taskApi";
+import { useMoveTask } from "src/api/taskApi";
 import { showNotification } from "src/utils/notificationUtil";
 
 type BoardProps = {
@@ -50,9 +50,6 @@ const KanbanBoard = (props: BoardProps) => {
     })
   );
 
-  // console.log("in board", isPublic, taskData);
-
-  // Task
   const openCreateTaskModal = () => {
     setOpenAddTask(true);
   };
@@ -80,12 +77,8 @@ const KanbanBoard = (props: BoardProps) => {
   //   setTaskActivities([newTaskActivity, ...taskActivities]);
   // };
 
-  // ---------------------------------------------DND LOGIC
+  // ------------------------ START: DND LOGIC ------------------------
   const onDragStart = (e: DragStartEvent) => {
-    if (e.active.data.current?.type === "Column") {
-      return;
-    }
-
     if (e.active.data.current?.type === "Task") {
       setActiveTask(e.active.data.current.task);
       return;
@@ -139,21 +132,13 @@ const KanbanBoard = (props: BoardProps) => {
     if (activeId === overId) return;
 
     const isActiveTask = active.data.current?.type === "Task";
-    const isOverTask = over.data.current?.type === "Task";
-
-    if (!isActiveTask) return;
-
-    console.log("MOVING: Active:", active, "Over column", over);
-
-    // console.log(
-    //   "DRAG_OVER: Active task ID:",
-    //   active.data?.current?.sortable.index,
-    //   "Over ID:",
-    //   over.data?.current?.sortable.index
-    // );
-
-    // Drop a task over a column
     const isOverAColumn = over.data.current?.type === "Column";
+    
+    if (!isActiveTask) return;
+    
+    // console.log("MOVING: Active:", active, "Over column", over);
+    
+    // Drop a task over a column
     if (isActiveTask && isOverAColumn) {
       console.log("move to column");
       const task = taskData.find((task) => task.id === activeId);
@@ -178,7 +163,7 @@ const KanbanBoard = (props: BoardProps) => {
       }
     }
   };
-  // ---------------------------------------------------------------------------
+  //  // ------------------------ END: DND LOGIC ------------------------
 
   return (
     <div>

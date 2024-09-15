@@ -1,7 +1,8 @@
 import { CircularProgress, Menu, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
 import { BsKanbanFill } from "react-icons/bs";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaUser } from "react-icons/fa";
+import { MdOutlineExitToApp } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -69,7 +70,7 @@ const HomePage = () => {
 
   if (isLoading) {
     return (
-      <div>
+      <div className="flex-center mt-[20%]">
         <CircularProgress />
       </div>
     );
@@ -95,7 +96,10 @@ const HomePage = () => {
           onClose={() => setAnchorProfile(null)}
           disableScrollLock={true}
         >
-          <MenuItem onClick={handleLogOut}>Log out</MenuItem>
+          <MenuItem onClick={handleLogOut} className="flex-center gap-2">
+            <MdOutlineExitToApp className="text-red-500" />
+            <p className="text-red-500 font-semibold">Log out</p>
+          </MenuItem>
         </Menu>
 
         <div className="flex gap-4 items-center">
@@ -135,7 +139,7 @@ const HomePage = () => {
 
       {filteredTasks && (
         <>
-          {/* Private task show the private (assigned) task and public task they take */}
+          {/* Private board show the private (assigned) task and public task they take */}
           <div className="h-[60vh] mt-20">
             <KanbanBoard
               isPublic={false}
