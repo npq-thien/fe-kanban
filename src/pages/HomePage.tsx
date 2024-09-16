@@ -8,12 +8,10 @@ import { Link, useNavigate } from "react-router-dom";
 
 import KanbanBoard from "src/components/KanbanBoard";
 import { useGetUserTasks } from "src/api/taskApi";
-import { storage } from "src/configs/firebase";
 import { Task } from "src/constants/types";
 import { useDebounce } from "src/hooks/useDebounce";
 import { setRole, setUserId } from "src/store/authSlice";
-import { decodeToken, generateId } from "src/utils/helper";
-import { getDownloadURL, listAll, ref, uploadBytes } from "firebase/storage";
+import { decodeToken } from "src/utils/helper";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -26,22 +24,6 @@ const HomePage = () => {
 
   const debouncedSearchTaskValue = useDebounce(searchTaskValue, 800);
 
-  // Upload image
-  const [image, setImage] = useState<File | null>(null);
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
-  const imageListRef = ref(storage, "images/");
-
-  useEffect(() => {
-    listAll(imageListRef).then((response) => {
-      response.items.forEach((item) => {
-        getDownloadURL(item).then((url) => {
-          setImageUrls((prev) => [...prev, url]);
-        });
-      });
-    });
-  }, []);
-
-  // console.log('urls', imageUrls)
 
   // Check is token valid, if
   useEffect(() => {
@@ -50,7 +32,7 @@ const HomePage = () => {
     if (storedToken) {
       const userInfo = decodeToken(storedToken);
       setUser(userInfo);
-      console.log("user info", userInfo);
+      // console.log("user info", userInfo);
 
       // Set role and userId using Redux
       dispatch(setRole(userInfo.role));
@@ -99,17 +81,6 @@ const HomePage = () => {
     localStorage.removeItem("token");
     setUser(null);
     navigate("/login");
-  };
-
-  // Upload image
-
-  const uploadeImage = () => {
-    if (!image) return;
-
-    const imageRef = ref(storage, `images/${image.name + "_" + generateId()}`);
-    uploadBytes(imageRef, image).then(() => {
-      alert("image uploaded");
-    });
   };
 
   return (
@@ -166,22 +137,6 @@ const HomePage = () => {
           </Link>
         )}
       </nav>
-
-      {/* Test Firebase */}
-      {/* <div className="mt-20 flex-center">
-        <input
-          type="file"
-          name=""
-          id=""
-          onChange={(e) => {
-            if (e.target.files && e.target.files.length > 0)
-              setImage(e.target.files[0]);
-          }}
-        />
-        <button className="btn-primary" onClick={uploadeImage}>
-          Upload image to Firebase
-        </button>
-      </div> */}
 
       {filteredTasks && (
         <>

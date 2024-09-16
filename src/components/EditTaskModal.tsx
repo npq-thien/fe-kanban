@@ -14,13 +14,20 @@ import ReactQuill from "react-quill";
 import { FaList, FaRegClock } from "react-icons/fa";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Task, UpdateTaskInput } from "src/constants/types";
-import { useDropTask, useTakeTask, useUpdateTask } from "src/api/taskApi";
+import {
+  useDropTask,
+  useGetTaskImages,
+  useTakeTask,
+  useUpdateTask,
+  useUploadImages,
+} from "src/api/taskApi";
 import { RootState } from "src/store";
 import { useEffect, useState } from "react";
 import { showNotification } from "src/utils/notificationUtil";
 import { ref, uploadBytes } from "firebase/storage";
 import { storage } from "src/configs/firebase";
 import { generateId } from "src/utils/helper";
+import TaskImages from "./TaskImage";
 
 type Props = {
   open: boolean;
@@ -43,9 +50,8 @@ const EditTaskModal = (props: Props) => {
   const [isEditingDescription, setIsEditingDescription] = useState(false);
 
   // Upload image
-  const [image, setImage] = useState<File | null>(null);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
-  const imageListRef = ref(storage, "images/");
+  const [images, setImages] = useState<File[]>([]);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string[]>([]);
 
   const [taskDescription, setTaskDescription] = useState(
     task.description || ""
@@ -54,8 +60,22 @@ const EditTaskModal = (props: Props) => {
   const { mutate: updateTask } = useUpdateTask();
   const { mutate: takeTask } = useTakeTask();
   const { mutate: dropTask } = useDropTask();
+  const { mutate: uploadImages } = useUploadImages();
 
   // console.log("task modal", task);
+
+  useEffect(() => {
+    // Create object URLs for each image file
+    if (images.length > 0) {
+      const previewUrls = images.map((image) => URL.createObjectURL(image));
+      setImagePreviewUrl(previewUrls);
+
+      // Clean up object URLs on component unmount or image change
+      return () => {
+        previewUrls.forEach((url) => URL.revokeObjectURL(url));
+      };
+    }
+  }, [images]);
 
   // Sync form values with selected task whenever it changes
   useEffect(() => {
@@ -99,15 +119,24 @@ const EditTaskModal = (props: Props) => {
         },
       }
     );
-    setIsEditingDescription(false);
 
     // Upload image to database
-    if (!image) return;
+    if (images.length > 0) {
+      uploadImages(
+        { taskId: task.id, images },
+        {
+          onSuccess: () => {
+            showNotification("success", "Images uploaded!");
+            setImages([]); // Empty the current images
+          },
+          onError: (error) => {
+            showNotification("error", "Image upload failed" + error);
+          },
+        }
+      );
+    }
 
-    const imageRef = ref(storage, `images/${image.name + "_" + generateId()}`);
-    uploadBytes(imageRef, image).then(() => {
-      showNotification("success", "Image uploaded");
-    });
+    setIsEditingDescription(false);
   };
 
   const handleCloseModal = () => {
@@ -128,8 +157,6 @@ const EditTaskModal = (props: Props) => {
     });
   };
 
-  console.log("img url", imagePreviewUrl);
-
   const handleDropTask = () => {
     dropTask(task.id, {
       onSuccess: () => {
@@ -140,6 +167,13 @@ const EditTaskModal = (props: Props) => {
         showNotification("error", "Drop task failed!" + error);
       },
     });
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      // setImages([...e.target.files]);
+      setImages(Array.from(e.target.files));
+    }
   };
 
   return (
@@ -298,26 +332,21 @@ const EditTaskModal = (props: Props) => {
                 </h3>
               </div>
 
-              <input
-                type="file"
-                name=""
-                id=""
-                onChange={(e) => {
-                  if (e.target.files && e.target.files.length > 0)
-                    setImage(e.target.files[0]);
-                }}
-              />
+              <input type="file" multiple onChange={handleFileChange} />
             </div>
 
-            {imagePreviewUrl && (
-              <div className="mt-4">
-                <img
-                  src={imagePreviewUrl}
-                  alt="Preview"
-                  className="w-full h-auto rounded-md"
-                />
+            {/* {imagePreviewUrl && (
+              <div className="flex gap-2">
+                {imagePreviewUrl.map((img) => (
+                  <img
+                    src={img}
+                    alt="Preview"
+                    className="w-auto h-[100px] rounded-md"
+                  />
+                ))}
               </div>
-            )}
+            )} */}
+            <TaskImages taskId={task.id} />
 
             {/* Description */}
             <div className="flex flex-col gap-2">

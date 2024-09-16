@@ -6,6 +6,8 @@ import {
   MoveTaskInput,
   UpdateTaskInput,
 } from "src/constants/types";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { storage } from "src/configs/firebase";
 
 export const useGetAllTasks = () => {
   const fetchData = async () => {
@@ -44,6 +46,24 @@ export const useGetUserTasks = (userId: string) => {
   });
 };
 
+export const useGetTaskImages = (taskId: string) => {
+  const fetchData = async () => {
+    try {
+      const response = await api.get(`${BASE_URL}/api/task/${taskId}/images`);
+      return response.data;
+    } catch (error) {
+      console.log("Fetch images url for task failed: ", error);
+    }
+  };
+
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_IMAGE_URL_FOR_TASK],
+    queryFn: fetchData,
+    onError: (error) => console.log("Get task images failed: ", error),
+    refetchOnWindowFocus: false,
+  });
+};
+
 export const useCreateTask = () => {
   const queryClient = useQueryClient();
 
@@ -57,6 +77,44 @@ export const useCreateTask = () => {
     },
     onError: (error) => {
       console.log("Create task failed", error);
+    },
+  });
+};
+
+export const useUploadImages = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      taskId,
+      images,
+    }: {
+      taskId: string;
+      images: File[];
+    }) => {
+      // Step 1: Upload all images to Firebase and get their URLs
+      const uploadedImageUrls = await Promise.all(
+        images.map(async (image) => {
+          const imageRef = ref(storage, `images/${image.name}_${Date.now()}`);
+          await uploadBytes(imageRef, image);
+          const url = await getDownloadURL(imageRef);
+          return url;
+        })
+      );
+      console.log("api upload url", uploadedImageUrls);
+      // Step 2: Send image URLs to the backend to associate them with the task
+      const response = await api.post(
+        `/api/task/${taskId}/images`,
+        uploadedImageUrls
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      // Invalidate the task query to refetch data and show updated images
+      queryClient.invalidateQueries([QUERY_KEYS.GET_USER_TASKS]);
+    },
+    onError: (error) => {
+      console.log("Image upload failed", error);
     },
   });
 };

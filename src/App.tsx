@@ -32,7 +32,6 @@ function App() {
 
     if (storedToken) {
       const userInfo = decodeToken(storedToken);
-      console.log(userInfo)
       const currentTime = Math.floor(Date.now() / 1000);
       
       if (userInfo.exp && userInfo.exp < currentTime) {

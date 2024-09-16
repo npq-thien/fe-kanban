@@ -7,4 +7,7 @@ export const QUERY_KEYS = {
   CREATE_TASK: "createTask",
   GET_ALL_TASKS: "getAllTasks",
   GET_USER_TASKS: "getUserTasks",
+
+  // IMAGES
+  GET_IMAGE_URL_FOR_TASK: "getTaskImages",
 };
