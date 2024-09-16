@@ -6,18 +6,21 @@ import {
 } from "@mui/material";
 import { MdAssignmentInd, MdOutlineSubtitles } from "react-icons/md";
 import { BsTextParagraph } from "react-icons/bs";
-import { IoMdClose } from "react-icons/io";
+import { IoMdClose, IoMdImages } from "react-icons/io";
 import "react-quill/dist/quill.snow.css";
+import { useSelector } from "react-redux";
+import ReactQuill from "react-quill";
 
 import { FaList, FaRegClock } from "react-icons/fa";
-import ReactQuill from "react-quill";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Task, UpdateTaskInput } from "src/constants/types";
 import { useDropTask, useTakeTask, useUpdateTask } from "src/api/taskApi";
-import { useSelector } from "react-redux";
 import { RootState } from "src/store";
 import { useEffect, useState } from "react";
 import { showNotification } from "src/utils/notificationUtil";
+import { ref, uploadBytes } from "firebase/storage";
+import { storage } from "src/configs/firebase";
+import { generateId } from "src/utils/helper";
 
 type Props = {
   open: boolean;
@@ -39,10 +42,14 @@ const EditTaskModal = (props: Props) => {
   const currentUser = useSelector((state: RootState) => state.auth);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
 
+  // Upload image
+  const [image, setImage] = useState<File | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const imageListRef = ref(storage, "images/");
+
   const [taskDescription, setTaskDescription] = useState(
     task.description || ""
   );
-
 
   const { mutate: updateTask } = useUpdateTask();
   const { mutate: takeTask } = useTakeTask();
@@ -93,6 +100,14 @@ const EditTaskModal = (props: Props) => {
       }
     );
     setIsEditingDescription(false);
+
+    // Upload image to database
+    if (!image) return;
+
+    const imageRef = ref(storage, `images/${image.name + "_" + generateId()}`);
+    uploadBytes(imageRef, image).then(() => {
+      showNotification("success", "Image uploaded");
+    });
   };
 
   const handleCloseModal = () => {
@@ -112,6 +127,8 @@ const EditTaskModal = (props: Props) => {
       },
     });
   };
+
+  console.log("img url", imagePreviewUrl);
 
   const handleDropTask = () => {
     dropTask(task.id, {
@@ -271,6 +288,36 @@ const EditTaskModal = (props: Props) => {
                 </>
               )}
             </div>
+
+            {/* Upload image */}
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-36">
+                <h3 className="flex items-center text-lg font-semibold gap-4">
+                  <IoMdImages />
+                  Images
+                </h3>
+              </div>
+
+              <input
+                type="file"
+                name=""
+                id=""
+                onChange={(e) => {
+                  if (e.target.files && e.target.files.length > 0)
+                    setImage(e.target.files[0]);
+                }}
+              />
+            </div>
+
+            {imagePreviewUrl && (
+              <div className="mt-4">
+                <img
+                  src={imagePreviewUrl}
+                  alt="Preview"
+                  className="w-full h-auto rounded-md"
+                />
+              </div>
+            )}
 
             {/* Description */}
             <div className="flex flex-col gap-2">

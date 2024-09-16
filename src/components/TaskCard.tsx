@@ -71,6 +71,7 @@ const TaskCard = (props: Props) => {
             {formatDueDate(task.dateTimeFinish.toString())}
           </p>
           {task.isPublic &&
+            task.isPublic &&
             (task.assignedUserDisplayName ? (
               <HiUserGroup className="text-orange-500" />
             ) : (
@@ -114,7 +115,7 @@ const TaskCard = (props: Props) => {
             )}
           </div>
 
-          {task.assignedUserDisplayName && (
+          {task.assignedUserDisplayName && task.isPublic && (
             <Tooltip title={task.assignedUserDisplayName} placement="top">
               <IconButton>
                 <FaUserCircle className="text-orange-500 text-xl" />

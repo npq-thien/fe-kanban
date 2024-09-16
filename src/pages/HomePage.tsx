@@ -1,17 +1,19 @@
 import { CircularProgress, Menu, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
 import { BsKanbanFill } from "react-icons/bs";
-import { FaSearch, FaUser } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import { MdOutlineExitToApp } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
-import { useGetUserTasks } from "src/api/taskApi";
 import KanbanBoard from "src/components/KanbanBoard";
+import { useGetUserTasks } from "src/api/taskApi";
+import { storage } from "src/configs/firebase";
 import { Task } from "src/constants/types";
 import { useDebounce } from "src/hooks/useDebounce";
 import { setRole, setUserId } from "src/store/authSlice";
-import { decodeToken } from "src/utils/helper";
+import { decodeToken, generateId } from "src/utils/helper";
+import { getDownloadURL, listAll, ref, uploadBytes } from "firebase/storage";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -23,6 +25,23 @@ const HomePage = () => {
   const openProfileMenu = Boolean(anchorProfile);
 
   const debouncedSearchTaskValue = useDebounce(searchTaskValue, 800);
+
+  // Upload image
+  const [image, setImage] = useState<File | null>(null);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const imageListRef = ref(storage, "images/");
+
+  useEffect(() => {
+    listAll(imageListRef).then((response) => {
+      response.items.forEach((item) => {
+        getDownloadURL(item).then((url) => {
+          setImageUrls((prev) => [...prev, url]);
+        });
+      });
+    });
+  }, []);
+
+  // console.log('urls', imageUrls)
 
   // Check is token valid, if
   useEffect(() => {
@@ -82,6 +101,17 @@ const HomePage = () => {
     navigate("/login");
   };
 
+  // Upload image
+
+  const uploadeImage = () => {
+    if (!image) return;
+
+    const imageRef = ref(storage, `images/${image.name + "_" + generateId()}`);
+    uploadBytes(imageRef, image).then(() => {
+      alert("image uploaded");
+    });
+  };
+
   return (
     <div className="overflow-x-auto min-h-[140vh] w-full bg-gradient-to-r from-[#FEC362] via-[#ECE854] to-[#5B9DFF]">
       <nav className="fixed top-0 w-full bg-gray-200 p-4 flex items-center justify-between gap-4 border-b-2 border-black z-30">
@@ -136,6 +166,22 @@ const HomePage = () => {
           </Link>
         )}
       </nav>
+
+      {/* Test Firebase */}
+      {/* <div className="mt-20 flex-center">
+        <input
+          type="file"
+          name=""
+          id=""
+          onChange={(e) => {
+            if (e.target.files && e.target.files.length > 0)
+              setImage(e.target.files[0]);
+          }}
+        />
+        <button className="btn-primary" onClick={uploadeImage}>
+          Upload image to Firebase
+        </button>
+      </div> */}
 
       {filteredTasks && (
         <>
