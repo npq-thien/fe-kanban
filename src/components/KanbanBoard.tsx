@@ -99,7 +99,7 @@ const KanbanBoard = (props: BoardProps) => {
     const isActiveTask = active.data.current?.type === "Task";
     const isOverTask = over.data.current?.type === "Task";
 
-    console.log("DROP: Active:", active, "Over task", over);
+    // console.log("DROP: Active:", active, "Over task", over);
 
     if (!isActiveTask) return;
 
@@ -140,7 +140,7 @@ const KanbanBoard = (props: BoardProps) => {
     
     // Drop a task over a column
     if (isActiveTask && isOverAColumn) {
-      console.log("move to column");
+      // console.log("move to column");
       const task = taskData.find((task) => task.id === activeId);
       const column = columns.find((col) => col.id === overId);
 

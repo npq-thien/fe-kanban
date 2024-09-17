@@ -64,6 +64,25 @@ export const useGetTaskImages = (taskId: string) => {
   });
 };
 
+export const useDeleteTaskImage = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (imageId: string) => {
+      const response = await api.delete(
+        `${BASE_URL}/api/task/images/${imageId}`
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries([QUERY_KEYS.GET_IMAGE_URL_FOR_TASK]);
+    },
+    onError: (error) => {
+      console.log("Delete image failed", error);
+    },
+  });
+};
+
 export const useCreateTask = () => {
   const queryClient = useQueryClient();
 
@@ -111,6 +130,7 @@ export const useUploadImages = () => {
     },
     onSuccess: () => {
       // Invalidate the task query to refetch data and show updated images
+      console.log("upload done");
       queryClient.invalidateQueries([QUERY_KEYS.GET_USER_TASKS]);
     },
     onError: (error) => {
@@ -188,7 +208,6 @@ export const useMoveTask = () => {
       return response.data;
     },
     onSuccess: () => {
-      console.log("move task ok");
       queryClient.invalidateQueries([QUERY_KEYS.GET_USER_TASKS]);
     },
     onError: (error) => {

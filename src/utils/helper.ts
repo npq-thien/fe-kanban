@@ -32,3 +32,10 @@ export const decodeToken = (token: string): UserInfo => {
   const userInfo = jwtDecode<UserInfo>(token);
   return userInfo;
 };
+
+export const getImageNameFromUrl = (url: string) => {
+  if (url === "") return;
+
+  const a = url.split("%2F")[1];
+  return a.split(".")[0];
+};

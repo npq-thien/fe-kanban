@@ -16,7 +16,6 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { Task, UpdateTaskInput } from "src/constants/types";
 import {
   useDropTask,
-  useGetTaskImages,
   useTakeTask,
   useUpdateTask,
   useUploadImages,
@@ -24,9 +23,6 @@ import {
 import { RootState } from "src/store";
 import { useEffect, useState } from "react";
 import { showNotification } from "src/utils/notificationUtil";
-import { ref, uploadBytes } from "firebase/storage";
-import { storage } from "src/configs/firebase";
-import { generateId } from "src/utils/helper";
 import TaskImages from "./TaskImage";
 
 type Props = {
@@ -97,45 +93,71 @@ const EditTaskModal = (props: Props) => {
     setValue("description", content);
   };
 
-  const onSubmit: SubmitHandler<UpdateTaskInput> = (data) => {
+  // const onSubmit: SubmitHandler<UpdateTaskInput> = async (data) => {
+  //   // Convert the date to an ISO 8601 string if needed
+  //   const date = new Date(data.dateTimeFinish);
+  //   const isoDate = date.toISOString();
+  //   updateTask(
+  //     { taskId: task.id, updatedTask: { ...data, dateTimeFinish: isoDate } },
+  //     {
+  //       onSuccess: () => {
+  //         handleClose();
+  //         reset();
+  //         setTaskDescription("");
+  //       },
+  //       onError: () => {
+  //         showNotification(
+  //           "warning",
+  //           "Only creator and assignee can edit the task."
+  //         );
+  //         reset();
+  //         setTaskDescription("");
+  //       },
+  //     }
+  //   );
+
+  //   // // Upload image to database
+  //   if (images.length > 0) {
+  //     uploadImages(
+  //       { taskId: task.id, images },
+  //       {
+  //         onSuccess: () => {
+  //           showNotification("success", "Images uploaded!");
+  //           setImages([]); // Empty the current images
+  //           setImagePreviewUrl([]);
+  //         },
+  //         onError: (error) => {
+  //           showNotification("error", "Image upload failed" + error);
+  //         },
+  //       }
+  //     );
+  //   }
+
+  const onSubmit: SubmitHandler<UpdateTaskInput> = async (data) => {
     // Convert the date to an ISO 8601 string if needed
     const date = new Date(data.dateTimeFinish);
     const isoDate = date.toISOString();
-    updateTask(
-      { taskId: task.id, updatedTask: { ...data, dateTimeFinish: isoDate } },
-      {
-        onSuccess: () => {
-          handleClose();
-          reset();
-          setTaskDescription("");
-        },
-        onError: () => {
-          showNotification(
-            "warning",
-            "Only creator and assignee can edit the task."
-          );
-          reset();
-          setTaskDescription("");
-        },
+    try {
+      await updateTask({
+        taskId: task.id,
+        updatedTask: { ...data, dateTimeFinish: isoDate },
+      });
+
+      if (images.length > 0) {
+        await uploadImages({ taskId: task.id, images });
+
+        showNotification("success", "Images uploaded!");
+        setImages([]); // Empty the current images
+        setImagePreviewUrl([]);
       }
-    );
 
-    // Upload image to database
-    if (images.length > 0) {
-      uploadImages(
-        { taskId: task.id, images },
-        {
-          onSuccess: () => {
-            showNotification("success", "Images uploaded!");
-            setImages([]); // Empty the current images
-          },
-          onError: (error) => {
-            showNotification("error", "Image upload failed" + error);
-          },
-        }
-      );
+      // If task update and image upload succeeded, close the modal and reset form
+        handleClose();
+        reset();
+    } catch (error) {
+      showNotification("error", "Failed to update task or upload images.");
+      console.error("Error: ", error);
     }
-
     setIsEditingDescription(false);
   };
 
@@ -143,6 +165,9 @@ const EditTaskModal = (props: Props) => {
     handleClose();
     setIsEditingDescription(false);
     reset();
+
+    setImages([]);
+    setImagePreviewUrl([]);
   };
 
   const handleTakeTask = () => {
@@ -332,22 +357,30 @@ const EditTaskModal = (props: Props) => {
                 </h3>
               </div>
 
-              <input type="file" multiple onChange={handleFileChange} />
+              <input
+                type="file"
+                className="p-2 border-2 border-dashed border-gray-400 rounded-md"
+                multiple
+                onChange={handleFileChange}
+              />
+
+              {imagePreviewUrl.length > 0 && (
+                <div>
+                  <p>Preview images</p>
+                  <div className="flex gap-2">
+                    {imagePreviewUrl.map((img) => (
+                      <img
+                        key={img}
+                        src={img}
+                        alt="Preview"
+                        className="w-auto h-[100px] rounded-md"
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+              <TaskImages taskId={task.id} />
             </div>
-
-            {/* {imagePreviewUrl && (
-              <div className="flex gap-2">
-                {imagePreviewUrl.map((img) => (
-                  <img
-                    src={img}
-                    alt="Preview"
-                    className="w-auto h-[100px] rounded-md"
-                  />
-                ))}
-              </div>
-            )} */}
-            <TaskImages taskId={task.id} />
-
             {/* Description */}
             <div className="flex flex-col gap-2">
               <div className="flex gap-36">
