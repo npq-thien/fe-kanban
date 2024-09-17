@@ -22,15 +22,21 @@ const TaskImages = ({ taskId }: { taskId: string }) => {
   if (isError) return <div>{"Failed to fetch images."}</div>;
 
   const handleDeleteImage = () => {
-    deleteImage(selectedImage?.id || "", {
-      onSuccess: () => {
-        showNotification("success", "Deleted image");
-        handleClose();
+    deleteImage(
+      {
+        imageId: selectedImage?.id || "",
+        imageUrl: selectedImage?.imageUrl || "",
       },
-      onError: () => {
-        showNotification("error", "Delete image failed");
-      },
-    });
+      {
+        onSuccess: () => {
+          showNotification("success", "Deleted image");
+          handleClose();
+        },
+        onError: () => {
+          showNotification("error", "Delete image failed");
+        },
+      }
+    );
   };
 
   const handleClose = () => {
@@ -43,7 +49,7 @@ const TaskImages = ({ taskId }: { taskId: string }) => {
         <div>No images available.</div>
       ) : (
         imageUrls.data.images.map((item: Image) => (
-          <div key={item.id} className="relative">
+          <div key={item.id} className="relative shrink-0">
             <img
               key={item.id}
               src={item.imageUrl}

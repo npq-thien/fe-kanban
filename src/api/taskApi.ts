@@ -6,7 +6,12 @@ import {
   MoveTaskInput,
   UpdateTaskInput,
 } from "src/constants/types";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
 import { storage } from "src/configs/firebase";
 
 export const useGetAllTasks = () => {
@@ -68,11 +73,31 @@ export const useDeleteTaskImage = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (imageId: string) => {
-      const response = await api.delete(
-        `${BASE_URL}/api/task/images/${imageId}`
-      );
-      return response.data;
+    mutationFn: async ({
+      imageId,
+      imageUrl,
+    }: {
+      imageId: string;
+      imageUrl: string;
+    }) => {
+      try {
+        // Step 1: Delete the image from Firebase Storage
+        // const imagePath = `images/${imageId}`;
+        const imageRef = ref(storage, imageUrl);
+        await deleteObject(imageRef);
+
+        // Step 2: Call API to remove the image record in DB
+        const response = await api.delete(`/api/task/images/${imageId}`);
+        return response.data;
+      } catch (error) {
+        console.error("Delete image failed", error);
+        throw error;
+      }
+
+      // const response = await api.delete(
+      //   `${BASE_URL}/api/task/images/${imageId}`
+      // );
+      // return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEYS.GET_IMAGE_URL_FOR_TASK]);
@@ -120,7 +145,6 @@ export const useUploadImages = () => {
           return url;
         })
       );
-      console.log("api upload url", uploadedImageUrls);
       // Step 2: Send image URLs to the backend to associate them with the task
       const response = await api.post(
         `/api/task/${taskId}/images`,

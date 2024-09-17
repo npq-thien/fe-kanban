@@ -56,7 +56,7 @@ const EditTaskModal = (props: Props) => {
   const { mutate: updateTask } = useUpdateTask();
   const { mutate: takeTask } = useTakeTask();
   const { mutate: dropTask } = useDropTask();
-  const { mutate: uploadImages } = useUploadImages();
+  const { mutateAsync: uploadImages } = useUploadImages();
 
   // console.log("task modal", task);
 
@@ -93,56 +93,18 @@ const EditTaskModal = (props: Props) => {
     setValue("description", content);
   };
 
-  // const onSubmit: SubmitHandler<UpdateTaskInput> = async (data) => {
-  //   // Convert the date to an ISO 8601 string if needed
-  //   const date = new Date(data.dateTimeFinish);
-  //   const isoDate = date.toISOString();
-  //   updateTask(
-  //     { taskId: task.id, updatedTask: { ...data, dateTimeFinish: isoDate } },
-  //     {
-  //       onSuccess: () => {
-  //         handleClose();
-  //         reset();
-  //         setTaskDescription("");
-  //       },
-  //       onError: () => {
-  //         showNotification(
-  //           "warning",
-  //           "Only creator and assignee can edit the task."
-  //         );
-  //         reset();
-  //         setTaskDescription("");
-  //       },
-  //     }
-  //   );
-
-  //   // // Upload image to database
-  //   if (images.length > 0) {
-  //     uploadImages(
-  //       { taskId: task.id, images },
-  //       {
-  //         onSuccess: () => {
-  //           showNotification("success", "Images uploaded!");
-  //           setImages([]); // Empty the current images
-  //           setImagePreviewUrl([]);
-  //         },
-  //         onError: (error) => {
-  //           showNotification("error", "Image upload failed" + error);
-  //         },
-  //       }
-  //     );
-  //   }
 
   const onSubmit: SubmitHandler<UpdateTaskInput> = async (data) => {
     // Convert the date to an ISO 8601 string if needed
     const date = new Date(data.dateTimeFinish);
     const isoDate = date.toISOString();
     try {
-      await updateTask({
+      updateTask({
         taskId: task.id,
         updatedTask: { ...data, dateTimeFinish: isoDate },
       });
 
+      // Async here to wait for the upload end
       if (images.length > 0) {
         await uploadImages({ taskId: task.id, images });
 
@@ -152,8 +114,8 @@ const EditTaskModal = (props: Props) => {
       }
 
       // If task update and image upload succeeded, close the modal and reset form
-        handleClose();
-        reset();
+      handleClose();
+      reset();
     } catch (error) {
       showNotification("error", "Failed to update task or upload images.");
       console.error("Error: ", error);
