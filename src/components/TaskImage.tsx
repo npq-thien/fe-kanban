@@ -3,6 +3,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Tooltip,
 } from "@mui/material";
 import { useState } from "react";
 import { MdDeleteForever } from "react-icons/md";
@@ -50,14 +51,16 @@ const TaskImages = ({ taskId }: { taskId: string }) => {
       ) : (
         imageUrls.data.images.map((item: Image) => (
           <div key={item.id} className="relative shrink-0">
-            <img
-              key={item.id}
-              src={item.imageUrl}
-              alt={"img"}
-              className="w-auto h-[150px] rounded-md"
-            />
+            <Tooltip title={getImageNameFromUrl(item.imageUrl)} placement="top">
+              <img
+                key={item.id}
+                src={item.imageUrl}
+                alt={"img"}
+                className="w-auto h-[150px] rounded-md"
+              />
+            </Tooltip>
             <button
-              className="absolute top-1 right-1 bg-gray-500 opacity-50 hover:opacity-100 text-white p-1 rounded"
+              className="absolute top-1 right-1 bg-gray-500 opacity-40 hover:opacity-100 text-white p-1 rounded"
               onClick={() => {
                 setSelectedImage(item);
                 setOpenDeleteImage(true);

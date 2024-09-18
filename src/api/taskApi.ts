@@ -93,11 +93,6 @@ export const useDeleteTaskImage = () => {
         console.error("Delete image failed", error);
         throw error;
       }
-
-      // const response = await api.delete(
-      //   `${BASE_URL}/api/task/images/${imageId}`
-      // );
-      // return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEYS.GET_IMAGE_URL_FOR_TASK]);

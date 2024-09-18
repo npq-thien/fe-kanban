@@ -11,7 +11,7 @@ import "react-quill/dist/quill.snow.css";
 import { useSelector } from "react-redux";
 import ReactQuill from "react-quill";
 
-import { FaList, FaRegClock } from "react-icons/fa";
+import { FaList, FaRegClock, FaRegImage } from "react-icons/fa";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Task, UpdateTaskInput } from "src/constants/types";
 import {
@@ -93,25 +93,36 @@ const EditTaskModal = (props: Props) => {
     setValue("description", content);
   };
 
-
   const onSubmit: SubmitHandler<UpdateTaskInput> = async (data) => {
     // Convert the date to an ISO 8601 string if needed
     const date = new Date(data.dateTimeFinish);
     const isoDate = date.toISOString();
+
     try {
-      updateTask({
-        taskId: task.id,
-        updatedTask: { ...data, dateTimeFinish: isoDate },
-      });
+      updateTask(
+        {
+          taskId: task.id,
+          updatedTask: { ...data, dateTimeFinish: isoDate },
+        },
+        {
+          onSuccess: async () => {
+            if (images.length > 0) {
+              // Await here to wait for the upload end
+              await uploadImages({ taskId: task.id, images });
 
-      // Async here to wait for the upload end
-      if (images.length > 0) {
-        await uploadImages({ taskId: task.id, images });
-
-        showNotification("success", "Images uploaded!");
-        setImages([]); // Empty the current images
-        setImagePreviewUrl([]);
-      }
+              showNotification("success", "Updated successfully!");
+              setImages([]); // Empty the current images
+              setImagePreviewUrl([]);
+            }
+          },
+          onError: () => {
+            showNotification(
+              "error",
+              "Only assignee and creator can update task."
+            );
+          },
+        }
+      );
 
       // If task update and image upload succeeded, close the modal and reset form
       handleClose();
@@ -319,7 +330,7 @@ const EditTaskModal = (props: Props) => {
                 </h3>
               </div>
 
-              <input
+              {/* <input
                 type="file"
                 className="p-2 border-2 border-dashed border-gray-400 rounded-md"
                 multiple
@@ -340,7 +351,47 @@ const EditTaskModal = (props: Props) => {
                     ))}
                   </div>
                 </div>
-              )}
+              )} */}
+
+              <div className="">
+                <label className="file-label cursor-pointer">
+                  <input
+                    type="file"
+                    className="hidden"
+                    multiple
+                    onChange={handleFileChange}
+                  />
+                  <div className="flex gap-4 p-4 border-2 border-dashed border-gray-300 rounded-lg items-center justify-center text-center bg-white hover:bg-gray-50">
+                    <FaRegImage className="text-xl" />
+                    <p className="text-gray-600">Click to upload images</p>
+                  </div>
+                </label>
+
+                {imagePreviewUrl.length > 0 && (
+                  <div className="mt-4">
+                    <p className="text-lg font-semibold text-gray-700">
+                      Preview images
+                    </p>
+                    <div className="flex gap-4 mt-2 overflow-x-auto">
+                      {imagePreviewUrl.map((img, index) => (
+                        <div
+                          key={index}
+                          className="preview-container flex flex-col items-center"
+                        >
+                          <img
+                            src={img}
+                            alt={`Preview ${index}`}
+                            className="w-auto h-[100px] rounded-md shadow-md"
+                          />
+                          <p className="file-name text-sm mt-2 text-gray-500">
+                            {images[index].name}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
               <TaskImages taskId={task.id} />
             </div>
             {/* Description */}
