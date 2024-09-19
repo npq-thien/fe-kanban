@@ -54,12 +54,6 @@ const KanbanBoard = (props: BoardProps) => {
     setOpenAddTask(true);
   };
 
-  //  TODO: CAN DELETE TASK CANCEL COLUMN
-  // const deleteTask = (taskId: Id) => {
-  //   setTasks(tasks.filter((task) => task.id !== taskId));
-  //   notifyDeleteTask(true);
-  // };
-
   const selectTask = (task: Task) => {
     setSelectedTask(task);
     setOpenEditTask(true);
@@ -99,19 +93,39 @@ const KanbanBoard = (props: BoardProps) => {
     const isActiveTask = active.data.current?.type === "Task";
     const isOverTask = over.data.current?.type === "Task";
 
-    // console.log("DROP: Active:", active, "Over task", over);
-
     if (!isActiveTask) return;
 
     // Drop a task over another task
     if (isActiveTask && isOverTask) {
+      // console.log(
+      //   active.data?.current?.sortable.index,
+      //   active.data?.current?.sortable.containerId,
+      //   over.data?.current?.sortable.index,
+      //   over.id,
+      //   "API MOVE: Active:",
+      //   active,
+      //   "over",
+      //   over
+      // );
+
+      // console.log(
+      //   "START",
+      //   active.data?.current?.task.position,
+      //   "END",
+      //   over.data?.current?.task.position,
+      // );
+      // console.log(
+      //   "ahihi",
+      //   over.data?.current?.sortable.containerId,
+      //   overColumn
+      // );
       moveTask(
         {
           taskId: active.id.toString(),
           startPosition: active.data?.current?.sortable.index,
+          startStatus: active.data?.current?.sortable.containerId,
           overPosition: over.data?.current?.sortable.index,
           overStatus: over.data?.current?.sortable.containerId,
-          startStatus: active.data?.current?.sortable.containerId,
         },
         {
           onError: () => {
@@ -133,11 +147,11 @@ const KanbanBoard = (props: BoardProps) => {
 
     const isActiveTask = active.data.current?.type === "Task";
     const isOverAColumn = over.data.current?.type === "Column";
-    
+
     if (!isActiveTask) return;
-    
+
     // console.log("MOVING: Active:", active, "Over column", over);
-    
+
     // Drop a task over a column
     if (isActiveTask && isOverAColumn) {
       // console.log("move to column");
@@ -164,7 +178,6 @@ const KanbanBoard = (props: BoardProps) => {
     }
   };
   //  // ------------------------ END: DND LOGIC ------------------------
-
   return (
     <div>
       <div className="px-4">
