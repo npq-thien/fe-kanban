@@ -118,7 +118,7 @@ const EditTaskModal = (props: Props) => {
           onError: () => {
             showNotification(
               "error",
-              "Only assignee and creator can update task."
+            "Only assignee and creator can update task."
             );
           },
         }

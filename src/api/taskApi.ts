@@ -230,7 +230,7 @@ export const useMoveTask = () => {
       queryClient.invalidateQueries([QUERY_KEYS.GET_USER_TASKS]);
     },
     onError: (error) => {
-      console.log("Take task failed", error);
+      console.log("Move task failed", error);
     },
   });
 };

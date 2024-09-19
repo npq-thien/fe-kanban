@@ -97,34 +97,32 @@ const KanbanBoard = (props: BoardProps) => {
 
     // Drop a task over another task
     if (isActiveTask && isOverTask) {
-      // console.log(
-      //   active.data?.current?.sortable.index,
-      //   active.data?.current?.sortable.containerId,
-      //   over.data?.current?.sortable.index,
-      //   over.id,
-      //   "API MOVE: Active:",
-      //   active,
-      //   "over",
-      //   over
-      // );
+      console.log(
+        active.data?.current?.sortable.index,
+        active.data?.current?.sortable.containerId,
+        over.data?.current?.sortable.index,
+        over.id,
+        "API MOVE: Active:",
+        active,
+        "over",
+        over
+      );
 
-      // console.log(
-      //   "START",
-      //   active.data?.current?.task.position,
-      //   "END",
-      //   over.data?.current?.task.position,
-      // );
-      // console.log(
-      //   "ahihi",
-      //   over.data?.current?.sortable.containerId,
-      //   overColumn
-      // );
+      console.log(
+        "START",
+        active.data?.current?.task.position,
+        active.data?.current?.sortable.containerId,
+        "END",
+        over.data?.current?.task.position,
+        over.data?.current?.sortable.containerId
+      );
+
       moveTask(
         {
           taskId: active.id.toString(),
-          startPosition: active.data?.current?.sortable.index,
+          startPosition: active.data?.current?.task.position,
           startStatus: active.data?.current?.sortable.containerId,
-          overPosition: over.data?.current?.sortable.index,
+          overPosition: over.data?.current?.task.position,
           overStatus: over.data?.current?.sortable.containerId,
         },
         {
@@ -158,7 +156,7 @@ const KanbanBoard = (props: BoardProps) => {
       const task = taskData.find((task) => task.id === activeId);
       const column = columns.find((col) => col.id === overId);
 
-      // console.log("DRAG OVER: Active task ID:", activeId, "Over ID:", overId);
+      console.log("DRAG OVER: Active task ID:", activeId, "Over ID:", overId);
 
       if (task && column) {
         // console.log("AHIHI", column.status);
@@ -169,10 +167,10 @@ const KanbanBoard = (props: BoardProps) => {
 
         moveTask({
           taskId: active.id.toString(),
-          startPosition: active.data?.current?.sortable.index,
+          startPosition: active.data?.current?.task.position,
+          startStatus: active.data?.current?.sortable.containerId,
           overPosition: overPostion,
           overStatus: column.status,
-          startStatus: active.data?.current?.sortable.containerId,
         });
       }
     }
