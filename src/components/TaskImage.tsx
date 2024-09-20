@@ -48,6 +48,8 @@ const TaskImages = ({ taskId }: { taskId: string }) => {
 
   const handleClose = () => {
     setOpenDeleteImage(false);
+    setOpenImageViewer(false);
+    setSelectedPreviewedImage(null);
   };
 
   const handleCloseImageViewer = () => {
@@ -60,40 +62,44 @@ const TaskImages = ({ taskId }: { taskId: string }) => {
       {imageData && imageData.data.images.length === 0 ? (
         <div>No images available.</div>
       ) : (
-        imageData.data.images.map((item: Image) => (
-          <div key={item.id} className="relative shrink-0">
-            <Tooltip title={getImageNameFromUrl(item.imageUrl)} placement="top">
-              <img
-                key={item.id}
-                src={item.imageUrl}
-                alt={"img"}
-                className="w-auto h-[150px] rounded-md cursor-pointer"
-                onClick={() => {
-                  setSelectedPreviewedImage(item);
-                  setOpenImageViewer(true);
-                }}
-              />
-            </Tooltip>
-            <button
-              className="absolute top-1 right-1 bg-gray-500 opacity-40 hover:opacity-100 text-white p-1 rounded"
-              onClick={() => {
-                setSelectedImage(item);
-                setOpenDeleteImage(true);
-              }}
-            >
-              <MdDeleteForever />
-            </button>
-          </div>
-        ))
-      )}
+        <>
+          {/* Image viewer */}
+          <ImageViewer
+            openViewer={openImageViewer}
+            handleCloseViewer={handleCloseImageViewer}
+            selectedPreviewImage={selectedPreviewedImage}
+            imageData={imageData.data.images}
+          />
 
-      {/* Image viewer */}
-      <ImageViewer
-        openViewer={openImageViewer}
-        handleCloseViewer={handleCloseImageViewer}
-        selectedPreviewImage={selectedPreviewedImage}
-        imageData={imageData.data.images}
-      />
+          {imageData.data.images.map((item: Image) => (
+            <div key={item.id} className="relative shrink-0">
+              <Tooltip
+                title={getImageNameFromUrl(item.imageUrl)}
+                placement="top"
+              >
+                <img
+                  src={item.imageUrl}
+                  alt={"img"}
+                  className="w-auto h-[150px] rounded-md cursor-pointer"
+                  onClick={() => {
+                    setSelectedPreviewedImage(item);
+                    setOpenImageViewer(true);
+                  }}
+                />
+              </Tooltip>
+              <button
+                className="absolute top-1 right-1 bg-gray-500 opacity-40 hover:opacity-100 text-white p-1 rounded"
+                onClick={() => {
+                  setSelectedImage(item);
+                  setOpenDeleteImage(true);
+                }}
+              >
+                <MdDeleteForever />
+              </button>
+            </div>
+          ))}
+        </>
+      )}
 
       <Dialog open={openDeleteImage} onClose={handleClose}>
         <DialogTitle>Confirm image deletion</DialogTitle>

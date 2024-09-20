@@ -92,7 +92,7 @@ const ImageViewer = (props: ImageViewerProps) => {
           >
             <IoMdArrowForward />
           </button>
-          <p className="text-center text-md font-semibold mt-2">
+          <p className="text-center text-md font-semibold mt-1">
             {getImageNameFromUrl(imageData[currentIndex].imageUrl)}
           </p>
         </div>

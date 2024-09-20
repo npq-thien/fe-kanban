@@ -2,9 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-.formatted-css ul,
-li,
-ol {
+ul, li, ol {
   list-style: revert;
   margin: revert;
   padding: revert;

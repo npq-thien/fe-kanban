@@ -24,7 +24,7 @@ const TaskActivityItem = (props: TaskActivityProps) => {
 
         <div
           dangerouslySetInnerHTML={{ __html: taskActivity.content }}
-          className="formatted-css w-full shadow-sm bg-white p-2 rounded-lg"
+          className="w-full shadow-sm bg-white p-2 rounded-lg"
         >
           {/* {taskActivity.content} */}
         </div>

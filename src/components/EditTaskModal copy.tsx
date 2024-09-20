@@ -170,7 +170,7 @@ const EditTaskModal = (props: Props) => {
               </div>
             ) : (
               <div
-                className="formatted-css bg-white rounded-xl p-2"
+                className="bg-white rounded-xl p-2"
                 dangerouslySetInnerHTML={{ __html: taskDescription }}
               />
             )}
