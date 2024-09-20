@@ -113,20 +113,19 @@ const EditTaskModal = (props: Props) => {
               showNotification("success", "Updated successfully!");
               setImages([]); // Empty the current images
               setImagePreviewUrl([]);
+              // If task update and image upload succeeded, close the modal and reset form
+              handleClose();
+              reset();
             }
           },
           onError: () => {
             showNotification(
               "error",
-            "Only assignee and creator can update task."
+              "Only assignee and creator can update task."
             );
           },
         }
       );
-
-      // If task update and image upload succeeded, close the modal and reset form
-      handleClose();
-      reset();
     } catch (error) {
       showNotification("error", "Failed to update task or upload images.");
       console.error("Error: ", error);
@@ -353,7 +352,7 @@ const EditTaskModal = (props: Props) => {
                 </div>
               )} */}
 
-              <div className="">
+              <div>
                 <label className="file-label cursor-pointer">
                   <input
                     type="file"
@@ -392,6 +391,7 @@ const EditTaskModal = (props: Props) => {
                   </div>
                 )}
               </div>
+              {/* To show the image of task */}
               <TaskImages taskId={task.id} />
             </div>
             {/* Description */}

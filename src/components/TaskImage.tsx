@@ -11,13 +11,19 @@ import { useDeleteTaskImage, useGetTaskImages } from "src/api/taskApi";
 import { Image } from "src/constants/types";
 import { getImageNameFromUrl } from "src/utils/helper";
 import { showNotification } from "src/utils/notificationUtil";
+import ImageViewer from "./ImageViewer";
 
 const TaskImages = ({ taskId }: { taskId: string }) => {
-  const { data: imageUrls, isLoading, isError } = useGetTaskImages(taskId);
+  const { data: imageData, isLoading, isError } = useGetTaskImages(taskId);
   const [openDeleteImage, setOpenDeleteImage] = useState(false);
   const [selectedImage, setSelectedImage] = useState<Image | null>(null);
+  // To view image
+  const [openImageViewer, setOpenImageViewer] = useState(false);
+  const [selectedPreviewedImage, setSelectedPreviewedImage] =
+    useState<Image | null>(null);
 
   const { mutate: deleteImage } = useDeleteTaskImage();
+  // console.log("in task image:", imageData);
 
   if (isLoading) return <div>Loading images...</div>;
   if (isError) return <div>{"Failed to fetch images."}</div>;
@@ -44,19 +50,28 @@ const TaskImages = ({ taskId }: { taskId: string }) => {
     setOpenDeleteImage(false);
   };
 
+  const handleCloseImageViewer = () => {
+    setOpenImageViewer(false);
+    setSelectedPreviewedImage(null);
+  };
+
   return (
     <div className="flex gap-2 overflow-x-auto">
-      {imageUrls && imageUrls.data.images.length === 0 ? (
+      {imageData && imageData.data.images.length === 0 ? (
         <div>No images available.</div>
       ) : (
-        imageUrls.data.images.map((item: Image) => (
+        imageData.data.images.map((item: Image) => (
           <div key={item.id} className="relative shrink-0">
             <Tooltip title={getImageNameFromUrl(item.imageUrl)} placement="top">
               <img
                 key={item.id}
                 src={item.imageUrl}
                 alt={"img"}
-                className="w-auto h-[150px] rounded-md"
+                className="w-auto h-[150px] rounded-md cursor-pointer"
+                onClick={() => {
+                  setSelectedPreviewedImage(item);
+                  setOpenImageViewer(true);
+                }}
               />
             </Tooltip>
             <button
@@ -71,6 +86,14 @@ const TaskImages = ({ taskId }: { taskId: string }) => {
           </div>
         ))
       )}
+
+      {/* Image viewer */}
+      <ImageViewer
+        openViewer={openImageViewer}
+        handleCloseViewer={handleCloseImageViewer}
+        selectedPreviewImage={selectedPreviewedImage}
+        imageData={imageData.data.images}
+      />
 
       <Dialog open={openDeleteImage} onClose={handleClose}>
         <DialogTitle>Confirm image deletion</DialogTitle>

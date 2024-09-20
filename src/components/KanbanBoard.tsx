@@ -22,6 +22,7 @@ import AddTaskModal from "./AddTaskModal";
 import EditTaskModal from "./EditTaskModal";
 import { useMoveTask } from "src/api/taskApi";
 import { showNotification } from "src/utils/notificationUtil";
+import { createPortal } from "react-dom";
 
 type BoardProps = {
   name?: string;
@@ -158,6 +159,8 @@ const KanbanBoard = (props: BoardProps) => {
 
       console.log("DRAG OVER: Active task ID:", activeId, "Over ID:", overId);
 
+      // const numTask = 2;
+
       if (task && column) {
         // console.log("AHIHI", column.status);
         let overPostion = over.data?.current?.sortable.index;
@@ -208,7 +211,21 @@ const KanbanBoard = (props: BoardProps) => {
                 </div>
               ))}
             </div>
-            <DragOverlay>
+            {/* createPortal: Better for ensuring the drag overlay floats above all elements 
+            and is not constrained by parent layout or styling */}
+            {createPortal(
+              <DragOverlay>
+                {activeTask && (
+                  <TaskCard
+                    selectTask={selectTask}
+                    task={activeTask}
+                    taskActivities={taskActivities}
+                  />
+                )}
+              </DragOverlay>,
+              document.body
+            )}
+            {/* <DragOverlay>
               {activeTask && (
                 <TaskCard
                   selectTask={selectTask}
@@ -216,7 +233,7 @@ const KanbanBoard = (props: BoardProps) => {
                   taskActivities={taskActivities}
                 />
               )}
-            </DragOverlay>
+            </DragOverlay> */}
           </DndContext>
         ) : (
           // Render without drag-and-drop when isPublic is false

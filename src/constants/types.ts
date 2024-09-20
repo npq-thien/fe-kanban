@@ -81,6 +81,7 @@ export type Task = {
   priority?: string;
   assignedUserId: string;
   assignedUserDisplayName: string;
+  imageIds: string[];
 };
 
 export type Image = {
