@@ -52,7 +52,7 @@ const ColumnContainer = (props: Props) => {
     <div
       ref={setNodeRef}
       // className="w-[280px] max-h-[400px] overflow-y-auto flex flex-col gap-4 bg-gradient-to-b from-cream-4 to-[rgba(255,255,255,0.1)] rounded-lg p-2"
-      className="w-[300px] max-h-[400px] overflow-y-auto flex flex-col gap-4 bg-cream-3 rounded-xl px-2 pb-4"
+      className="w-[300px] max-h-[54vh] overflow-y-auto flex flex-col gap-4 bg-cream-3 rounded-xl px-2 pb-4"
       id={column.id.toString()}
     >
       <header className="sticky top-0 flex-between gap-2 font-bold pt-2 mb-2 bg-cream-3 z-20">
