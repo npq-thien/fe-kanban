@@ -79,9 +79,9 @@ const TaskCard = (props: Props) => {
               <HiUserGroup className="text-gray-500" />
             ))}
 
-          {task.description && task.description !== "<p><br></p>" && (
-            <BsTextParagraph />
-          )}
+          {task.description &&
+            task.description !== "<p><br></p>" &&
+            task.description !== "<p></p>" && <BsTextParagraph />}
 
           {task.imageIds.length > 0 && <p>co image</p>}
         </div>
