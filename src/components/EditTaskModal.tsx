@@ -59,7 +59,6 @@ const EditTaskModal = (props: Props) => {
   const { mutateAsync: uploadImages } = useUploadImages();
 
   // console.log("task modal", task);
-
   useEffect(() => {
     // Create object URLs for each image file
     if (images.length > 0) {
@@ -99,9 +98,22 @@ const EditTaskModal = (props: Props) => {
     const isoDate = date.toISOString();
 
     try {
-      updateTask({
-        taskId: task.id,
-        updatedTask: { ...data, dateTimeFinish: isoDate },
+      // Update the task
+      await new Promise<void>((resolve, reject) => {
+        updateTask(
+          {
+            taskId: task.id,
+            updatedTask: { ...data, dateTimeFinish: isoDate },
+          },
+          {
+            onError: (error) => {
+              reject(error); // Trigger catch block if there's an error
+            },
+            onSuccess: () => {
+              resolve(); // Proceed if the task update is successful
+            },
+          }
+        );
       });
 
       // If there are images, upload them
@@ -119,7 +131,10 @@ const EditTaskModal = (props: Props) => {
       handleClose();
       reset();
     } catch (error) {
-      showNotification("error", "Failed to update task or upload images.");
+      showNotification(
+        "warning",
+        "Only creator and assignee can update the task."
+      );
       console.error("Error: ", error);
     }
     setIsEditingDescription(false);
