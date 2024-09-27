@@ -126,11 +126,13 @@ const TaskCard = (props: Props) => {
           </div>
 
           {task.assignedUserDisplayName && task.isPublic && (
-            <Tooltip title={task.assignedUserDisplayName} placement="top">
-              <IconButton>
-                <FaUserCircle className="text-orange-500 text-xl" />
-              </IconButton>
-            </Tooltip>
+            <div className="mt-2">
+              <Tooltip title={task.assignedUserDisplayName} placement="top">
+                <IconButton>
+                  <FaUserCircle className="text-orange-500 text-xl" />
+                </IconButton>
+              </Tooltip>
+            </div>
           )}
         </div>
       </div>

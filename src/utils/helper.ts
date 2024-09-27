@@ -22,8 +22,17 @@ export const formatDate = (date: Date): string => {
   return date.toLocaleDateString("en-US", options);
 };
 
+export const formatDueDateTime = (date: string): string => {
+  const onlyDate = date.split("T")[0];
+  const onlyTime = date.split("T")[1].split(":")[0] + ":" + date.split("T")[1].split(":")[1];
+
+  const formatedDate = onlyDate.split("-").reverse();
+  return formatedDate.join("-") + " | " + onlyTime;
+};
+
 export const formatDueDate = (date: string): string => {
   const onlyDate = date.split("T")[0];
+  
   const formatedDate = onlyDate.split("-").reverse();
   return formatedDate.join("-");
 };
